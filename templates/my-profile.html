@@ -1,0 +1,118 @@
+{% extends "layout.html" %}
+
+{% block title %}My Profile - Lumora{% endblock %}
+{% block body_class %}page-my-profile{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="container">
+        <h1 class="page-title animate-on-scroll"><i class="fas fa-user-edit"></i> My Profile</h1>
+        <p class="page-subtitle animate-on-scroll" data-stagger-index="1">View and edit your personal information.</p>
+    </div>
+</div>
+
+<section class="content-section">
+    <div class="container">
+        {% if user %}
+        <div class="form-container animate-on-scroll">
+            <form id="profile-edit-form" action="{{ url_for('my_profile_page') }}" method="POST" enctype="multipart/form-data">
+                
+                <div class="profile-picture-group">
+                    <label for="profile-picture">
+                        <img id="picture-preview" src="{{ user.profile_picture_url if user.profile_picture_url.startswith('http') else url_for('static', filename=user.profile_picture_url or 'uploads/profile_pics/default-avatar.png') }}" alt="Profile picture" class="profile-img-preview">
+                    </label>
+                </div>
+                <input type="file" id="profile-picture" name="profile-picture" class="hidden" accept="image/*" disabled>
+
+                <div class="form-group">
+                    <input type="text" id="fullName" name="fullName" class="form-input" value="{{ user.name or '' }}" disabled required>
+                    <label for="fullName" class="form-label">Full Name</label>
+                </div>
+                <div class="form-group">
+                    <input type="email" id="email" name="email" class="form-input" value="{{ user.email or '' }}" disabled required>
+                    <label for="email" class="form-label">Email Address</label>
+                </div>
+                <div class="form-group">
+                    <input type="tel" id="phone" name="phone" class="form-input" value="{{ user.contact or '' }}" disabled required>
+                    <label for="phone" class="form-label">Phone Number</label>
+                </div>
+                <div class="form-group">
+                    <input type="text" id="address_line1" name="address_line1" class="form-input" value="{{ user.address_line1 or '' }}" disabled>
+                    <label for="address_line1" class="form-label">Address</label>
+                </div>
+                <div class="row">
+                    <div class="col-md-4 form-group">
+                        <input type="text" id="city" name="city" class="form-input" value="{{ user.city or '' }}" disabled>
+                        <label for="city" class="form-label">City</label>
+                    </div>
+                    <div class="col-md-4 form-group">
+                        <input type="text" id="state" name="state" class="form-input" value="{{ user.state or '' }}" disabled>
+                        <label for="state" class="form-label">State</label>
+                    </div>
+                    <div class="col-md-4 form-group">
+                        <input type="text" id="pincode" name="pincode" class="form-input" value="{{ user.pincode or '' }}" disabled>
+                        <label for="pincode" class="form-label">PIN Code</label>
+                    </div>
+                </div>
+                <div id="profile-buttons" class="form-buttons" style="justify-content: center;">
+                    <button type="button" id="edit-profile-btn" class="btn-primary">Edit Profile</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="form-container animate-on-scroll mt-5">
+            <h3 class="form-step-title">Change Password</h3>
+            <form id="change-password-form" action="{{ url_for('change_password') }}" method="POST" novalidate>
+                <div class="form-group">
+                    <input type="password" id="current_password" name="current_password" class="form-input" required placeholder=" ">
+                    <label for="current_password" class="form-label">Current Password</label>
+                    <div class="error-message"></div>
+                </div>
+                <div class="form-group">
+                    <input type="password" id="new_password" name="new_password" class="form-input" required placeholder=" ">
+                    <label for="new_password" class="form-label">New Password</label>
+                    <div class="error-message"></div>
+                </div>
+                <div class="form-group">
+                    <input type="password" id="confirm_new_password" name="confirm_new_password" class="form-input" required placeholder=" ">
+                    <label for="confirm_new_password" class="form-label">Confirm New Password</label>
+                    <div class="error-message"></div>
+                </div>
+                <button type="submit" class="btn-submit">Update Password</button>
+            </form>
+        </div>
+
+        <div class="form-container animate-on-scroll mt-5">
+            <h3 class="form-step-title">My Orders</h3>
+            {% if orders %}
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Order ID</th>
+                                <th>Date</th>
+                                <th>Total</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for order in orders %}
+                            <tr>
+                                <td>#{{ order.order_id }}</td>
+                                <td>{{ order.created_at.strftime('%Y-%m-%d') }}</td>
+                                <td>${{ "%.2f"|format(order.total_amount) }}</td>
+                                <td><span class="badge bg-primary">{{ order.status }}</span></td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <p class="text-center text-muted">You have not placed any orders yet.</p>
+            {% endif %}
+        </div>
+
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

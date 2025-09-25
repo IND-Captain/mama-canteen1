@@ -1,0 +1,47 @@
+{% extends "layout.html" %}
+
+{% block title %}{{ product.name }} - Lumora Shop{% endblock %}
+{% block body_class %}page-product-detail{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="container">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ url_for('home') }}">Shop</a></li>
+                <li class="breadcrumb-item active" aria-current="page">{{ product.name }}</li>
+            </ol>
+        </nav>
+        <h1 class="page-title animate-on-scroll">{{ product.name }}</h1>
+    </div>
+</div>
+
+<section class="content-section">
+    <div class="container">
+        <div class="row g-5">
+            <div class="col-lg-6 animate-on-scroll">
+                <img src="{{ url_for('static', filename=product.image_url) }}" alt="{{ product.name }}" class="img-fluid rounded shadow-lg">
+            </div>
+            <div class="col-lg-6 animate-on-scroll" data-stagger-index="1">
+                <h2 class="product-detail-price">${{ "%.2f"|format(product.price) }}</h2>
+                <p class="product-detail-stock {% if product.stock > 10 %}text-success{% else %}text-danger{% endif %}">
+                    {% if product.stock > 0 %}
+                        In Stock ({{ product.stock }} available)
+                    {% else %}
+                        Out of Stock
+                    {% endif %}
+                </p>
+                <p class="lead">{{ product.description }}</p>
+                
+                <form action="{{ url_for('add_to_cart', product_id=product.product_id) }}" method="POST" class="add-to-cart-form">
+                    <div class="form-group quantity-selector">
+                        <label for="quantity">Quantity:</label>
+                        <input type="number" name="quantity" id="quantity" value="1" min="1" max="{{ product.stock }}" class="form-control">
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-lg"><i class="fas fa-cart-plus"></i> Add to Cart</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

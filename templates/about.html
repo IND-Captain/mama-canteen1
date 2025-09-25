@@ -1,0 +1,70 @@
+{% extends "layout.html" %}
+
+{% block title %}About Us - Lumora{% endblock %}
+{% block body_class %}page-about{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="container">
+        <h1 class="page-title animate-on-scroll"><i class="fas fa-info-circle"></i> Our Mission</h1>
+        <p class="page-subtitle animate-on-scroll" data-stagger-index="1">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+    </div>
+</div>
+
+<section class="content-section">
+    <div class="container">
+        <div class="row g-5 align-items-center">
+            <div class="col-lg-6 about-content animate-on-scroll">
+                <h2 class="section-title">Who We Are</h2>
+                <p>Lumora was founded on a simple, powerful idea. We are a team of technologists, designers, and volunteers dedicated to creating amazing web experiences. We leverage technology to make the process of building websites as simple and efficient as possible.</p>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor. Cras elementum ultrices diam. Maecenas ligula massa, varius a, semper congue, euismod non, mi.</p>
+            </div>
+            <div class="col-lg-6 about-image animate-on-scroll" data-stagger-index="1">
+                <img src="https://placehold.co/600x400/dc2626/white?text=Our+Team" class="img-fluid rounded shadow-lg" alt="A diverse group of team members collaborating">
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="team-section">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">Meet the Team</h2>
+            <p class="section-subtitle">The passionate individuals behind Lumora.</p>
+        </div>
+        <div class="row g-4 justify-content-center">
+            <div class="col-md-6 col-lg-3 team-member-card animate-on-scroll">
+                <img src="https://placehold.co/200x200/f3f4f6/1f2937?text=CEO" alt="Jane Doe, CEO" class="team-member-img">
+                <h3 class="team-member-name">Jane Doe</h3>
+                <p class="team-member-title">Founder & CEO</p>
+            </div>
+            <div class="col-md-6 col-lg-3 team-member-card animate-on-scroll" data-stagger-index="1">
+                <img src="https://placehold.co/200x200/f3f4f6/1f2937?text=CTO" alt="John Smith, CTO" class="team-member-img">
+                <h3 class="team-member-name">John Smith</h3>
+                <p class="team-member-title">Chief Technology Officer</p>
+            </div>
+            <div class="col-md-6 col-lg-3 team-member-card animate-on-scroll" data-stagger-index="2">
+                <img src="https://placehold.co/200x200/f3f4f6/1f2937?text=COO" alt="Emily White, COO" class="team-member-img">
+                <h3 class="team-member-name">Emily White</h3>
+                <p class="team-member-title">Head of Operations</p>
+            </div>
+            <div class="col-md-6 col-lg-3 team-member-card animate-on-scroll" data-stagger-index="3">
+                <img src="https://placehold.co/200x200/f3f4f6/1f2937?text=CMO" alt="Michael Brown, CMO" class="team-member-img">
+                <h3 class="team-member-name">Michael Brown</h3>
+                <p class="team-member-title">Community Manager</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="cta-section">
+    <div class="container cta-content">
+        <h2 class="animate-on-scroll">Ready to Make an Impact?</h2>
+        <p class="animate-on-scroll" data-stagger-index="1">Let's build something amazing together. Get in touch with our team.</p>
+        <div class="hero-buttons animate-on-scroll" data-stagger-index="2">
+            <a href="{{ url_for('landing_page') }}" class="btn btn-cta-primary btn-lg">Get Involved</a>
+            <a href="{{ url_for('contact_page') }}" class="btn btn-outline-light btn-lg">Contact Us</a>
+        </div>
+    </div>
+</section>
+{% endblock %}

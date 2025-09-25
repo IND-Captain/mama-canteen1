@@ -1,0 +1,110 @@
+{% extends "layout.html" %}
+
+{% block title %}Admin - Canteen Menu{% endblock %}
+{% block body_class %}page-canteen-admin{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/canteen.css') }}">
+<style>
+    /* Additional styles for admin page */
+    .admin-container {
+        max-width: 1400px;
+        margin: 40px auto;
+        padding: 20px;
+    }
+    .menu-management {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 40px;
+        align-items: flex-start;
+    }
+    .menu-items-list {
+        background: var(--secondary-dark);
+        border-radius: 20px;
+        padding: 30px;
+        border: 1px solid var(--border-dark);
+        max-height: 80vh;
+        overflow-y: auto;
+    }
+    .menu-item-admin {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px;
+        border-bottom: 1px solid var(--border-dark);
+        transition: var(--transition);
+    }
+    .menu-item-admin:hover { background: rgba(255, 215, 0, 0.05); }
+    .item-info { display: flex; align-items: center; gap: 15px; }
+    .item-image-admin { width: 60px; height: 60px; object-fit: cover; border-radius: 10px; }
+    .item-details h4 { color: var(--text-bright); margin-bottom: 5px; }
+    .item-details p { color: var(--text-muted); font-size: 0.9rem; margin: 0; }
+    .item-actions { display: flex; gap: 10px; }
+    .item-form { background: var(--secondary-dark); border-radius: 20px; padding: 30px; border: 1px solid var(--border-dark); position: sticky; top: 120px; }
+    .form-actions { display: flex; gap: 15px; margin-top: 25px; }
+
+    @media (max-width: 992px) {
+        .menu-management { grid-template-columns: 1fr; }
+        .item-form { position: static; }
+    }
+</style>
+
+<main class="admin-container">
+    <div class="section-header">
+        <h2 class="section-title">Canteen Menu Management</h2>
+        <p class="section-subtitle">Add, edit, or remove items from the menu.</p>
+    </div>
+
+    <div class="menu-management">
+        <div class="menu-items-list">
+            <h3 style="color: var(--text-bright); margin-bottom: 20px;">Current Menu Items</h3>
+            <div id="menuItemsList">
+                <!-- Menu items will be populated by JavaScript -->
+                <div class="empty-state"><div class="empty-icon"><i class="fas fa-spinner fa-spin"></i></div><h3>Loading Menu...</h3></div>
+            </div>
+        </div>
+        
+        <div class="item-form">
+            <h3 style="color: var(--text-bright); margin-bottom: 20px;" id="formTitle">Add New Item</h3>
+            <form id="menuItemForm">
+                <input type="hidden" id="itemId">
+                <div class="form-group">
+                    <label class="form-label" for="itemName">Item Name</label>
+                    <input type="text" id="itemName" class="form-input" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="itemCategory">Category</label>
+                    <select id="itemCategory" class="form-input" required>
+                        <option value="">Select Category</option>
+                        <option value="appetizers">Appetizers</option>
+                        <option value="mains">Main Courses</option>
+                        <option value="desserts">Desserts</option>
+                        <option value="beverages">Beverages</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="itemType">Type</label>
+                    <select id="itemType" class="form-input" required>
+                        <option value="">Select Type</option>
+                        <option value="veg">Vegetarian</option>
+                        <option value="nonveg">Non-Vegetarian</option>
+                    </select>
+                </div>
+                <div class="form-group"><label class="form-label" for="itemPrice">Price (INR)</label><input type="number" id="itemPrice" class="form-input" min="0" step="0.01" required></div>
+                <div class="form-group"><label class="form-label" for="itemStock">Stock</label><input type="number" id="itemStock" class="form-input" min="0" required></div>
+                <div class="form-group"><label class="form-label" for="itemDescription">Description</label><textarea id="itemDescription" class="form-input" rows="3" required></textarea></div>
+                <div class="form-group"><label class="form-label" for="itemImage">Image URL</label><input type="text" id="itemImage" class="form-input" required></div>
+                <div class="form-group"><label class="form-label" for="itemBadge">Badge (Optional)</label><input type="text" id="itemBadge" class="form-input" placeholder="e.g., Signature Dark"></div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" id="cancelBtn">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Item</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</main>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/admin_canteen.js') }}"></script>
+{% endblock %}

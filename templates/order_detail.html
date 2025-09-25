@@ -1,0 +1,78 @@
+{% extends "layout.html" %}
+
+{% block title %}Order #{{ order.order_id }} - Lumora{% endblock %}
+{% block body_class %}page-order-detail{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="container">
+        <h1 class="page-title animate-on-scroll">Order #{{ order.order_id }}</h1>
+        <p class="page-subtitle animate-on-scroll" data-stagger-index="1">Placed on {{ order.created_at.strftime('%B %d, %Y') }}</p>
+    </div>
+</div>
+
+<section class="content-section">
+    <div class="container">
+        <div class="row g-5">
+            <!-- Order Summary -->
+            <div class="col-lg-8">
+                <h3 class="section-title" style="font-size: 1.8rem; text-align: left; margin-bottom: 20px;">Items in this Order</h3>
+                <div class="cart-items-container">
+                    {% for item in order.items %}
+                    <div class="cart-item"> 
+                        <img src="{{ url_for('static', filename=item.image_url) }}" alt="{{ item.name }}" class="cart-item-img">
+                        <div class="cart-item-details">
+                            <a href="{{ url_for('product_detail_page', product_id=item.product_id) }}" class="cart-item-title">{{ item.name }}</a>
+                            <div class="cart-item-meta">
+                                <span>Quantity: {{ item.quantity }}</span>
+                                <span>Price: ${{ "%.2f"|format(item.price) }}</span>
+                            </div>
+                        </div>
+                        <div class="cart-item-subtotal">
+                            ${{ "%.2f"|format(item.price * item.quantity) }}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Tracking & Info -->
+            <div class="col-lg-4">
+                <div class="sticky-top" style="top: 120px;">
+                    <div class="form-container p-4">
+                        <h3 class="section-title" style="font-size: 1.8rem; text-align: left; margin-bottom: 20px;">Order Summary</h3>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                Subtotal
+                                <span>${{ "%.2f"|format(order.total_amount) }}</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                Shipping
+                                <span>FREE</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center fw-bold fs-5">
+                                Total
+                                <span>${{ "%.2f"|format(order.total_amount) }}</span>
+                            </li>
+                        </ul>
+
+                        <hr class="my-4">
+
+                        <h4 style="font-size: 1.5rem; margin-bottom: 20px;">Tracking Details</h4>
+                        <div class="info-item">
+                            <i class="fas fa-truck fa-fw"></i>
+                            <span>Status: <strong>{{ order.status }}</strong></span>
+                        </div>
+                        <div class="info-item">
+                            <i class="fas fa-barcode fa-fw"></i>
+                            <span>Tracking #: <strong>{{ order.tracking_number }}</strong></span>
+                        </div>
+                        <a href="#" class="btn btn-primary w-100 mt-3 disabled" aria-disabled="true">Track on Carrier Site</a>
+                        <small class="d-block text-center text-muted mt-2">(Tracking link not yet available)</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

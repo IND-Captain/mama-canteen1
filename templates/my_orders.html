@@ -1,0 +1,26 @@
+{% extends "layout.html" %}
+
+{% block title %}My Orders - Canteen{% endblock %}
+{% block body_class %}page-canteen-orders{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/canteen.css') }}">
+
+<main>
+  <section id="orders" class="section active" aria-live="polite" aria-atomic="true">
+    <div class="container">
+      <div class="section-header">
+        <h2 class="section-title">Live Order Tracking</h2>
+        <p class="section-subtitle">Track your culinary journey from kitchen to table</p>
+      </div>
+      <div class="orders-grid" id="ordersContainer">
+        <!-- Orders will be rendered here by canteen.js -->
+      </div>
+    </div>
+  </section>
+</main>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/canteen.js') }}"></script>
+{% endblock %}

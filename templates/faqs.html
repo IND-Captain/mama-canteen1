@@ -1,0 +1,89 @@
+{% extends "layout.html" %}
+
+{% block title %}FAQs - Lumora{% endblock %}
+{% block body_class %}page-faqs{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="container">
+        <h1 class="page-title animate-on-scroll"><i class="fas fa-question-circle"></i> Frequently Asked Questions</h1>
+        <p class="page-subtitle animate-on-scroll" data-stagger-index="1">Find answers to common questions about our platform and services.</p>
+    </div>
+</div>
+
+<section class="faq-section">
+    <div class="container">
+        <div class="faq-controls">
+            <div class="faq-search-bar">
+                <input type="text" id="faq-search" placeholder="Search questions...">
+                <i class="fas fa-search"></i>
+            </div>
+            <div class="faq-tabs">
+                <button class="faq-tab active" data-category="all">All</button>
+                <button class="faq-tab" data-category="general">General</button>
+                <button class="faq-tab" data-category="technical">Technical</button>
+                <button class="faq-tab" data-category="account">Account</button>
+            </div>
+        </div>
+
+        <div class="accordion" id="faqAccordion">
+            <div class="accordion-item faq-item" data-category="general">
+                <h2 class="accordion-header" id="headingOne">
+                    <button class="accordion-button faq-question" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                        What is the purpose of this template?
+                    </button>
+                </h2>
+                <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#faqAccordion">
+                    <div class="accordion-body faq-answer">
+                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. This template is designed to provide a modern, responsive, and feature-rich starting point for web applications.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="accordion-item faq-item" data-category="general">
+                <h2 class="accordion-header" id="headingTwo">
+                    <button class="accordion-button collapsed faq-question" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                        Is it easy to customize?
+                    </button>
+                </h2>
+                <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#faqAccordion">
+                    <div class="accordion-body faq-answer">
+                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Yes, the code is organized into modular components, and the styling uses CSS variables for easy theme adjustments.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="accordion-item faq-item" data-category="technical">
+                <h2 class="accordion-header" id="headingThree">
+                    <button class="accordion-button collapsed faq-question" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                        What technologies are used?
+                    </button>
+                </h2>
+                <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#faqAccordion">
+                    <div class="accordion-body faq-answer">
+                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. The backend is powered by Flask (Python), and the frontend uses standard HTML, CSS, and JavaScript with Bootstrap 5 for UI components.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="accordion-item faq-item" data-category="account">
+                <h2 class="accordion-header" id="headingFour">
+                    <button class="accordion-button collapsed faq-question" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+                        How do I update my profile information?
+                    </button>
+                </h2>
+                <div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headingFour" data-bs-parent="#faqAccordion">
+                    <div class="accordion-body faq-answer">
+                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Simply log in and navigate to the "My Profile" page. From there, you can edit your personal details, contact information, and privacy settings.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="cta-section">
+    <div class="container cta-content">
+        <h2>Still have questions?</h2>
+        <p>Our support team is ready to assist you.</p>
+        <a href="{{ url_for('contact_page') }}" class="btn btn-cta-primary btn-lg">Contact Support</a>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Oasis Animation</title>
+<style>
+  body {
+    margin: 0;
+    overflow: hidden;
+    font-family: sans-serif;
+    color: white;
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    background: #000;
+    cursor: pointer; /* indicate clickable */
+  }
+
+  video#bgVideo {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    width: auto;
+    height: 100%;
+    min-width: 100%;
+    min-height: 100%;
+    transform: translate(-50%, -50%);
+    object-fit: cover;
+    z-index: 0;
+    filter: brightness(0.45) contrast(1.1);
+  }
+
+  .overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.4);
+    z-index: 1;
+  }
+
+  .container {
+    position: relative;
+    text-align: center;
+    transform: scale(0.5);
+    opacity: 0;
+    animation: fadeIn 1s forwards 0.5s;
+    z-index: 2;
+  }
+
+  @keyframes fadeIn {
+    to { opacity: 1; transform: scale(1); }
+  }
+
+  .logo img {
+    width: 350px;
+    max-width: 90%;
+    height: auto;
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+  }
+
+  .text-container {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: slideIn 1s forwards 1.5s;
+  }
+
+  @keyframes slideIn {
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .oasis-text {
+    font-size: 3em;
+    font-weight: bold;
+    margin: 0;
+    letter-spacing: 5px;
+    background: linear-gradient(to right, #ff4d4d, #ff6b6b);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .slogan-text {
+    font-size: 1.2em;
+    margin-top: 10px;
+    letter-spacing: 2px;
+    color: #ffdddd;
+  }
+
+  .particle {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    background: rgba(255,255,255,0.7);
+    border-radius: 50%;
+    animation: float 6s infinite;
+  }
+
+  @keyframes float {
+    0% { transform: translateY(0) translateX(0) scale(1); opacity: 1; }
+    50% { transform: translateY(-200px) translateX(50px) scale(1.2); opacity: 0.5; }
+    100% { transform: translateY(-400px) translateX(-50px) scale(1); opacity: 0; }
+  }
+</style>
+</head>
+<body>
+
+<video id="bgVideo" autoplay muted loop playsinline>
+  <source src="2.mp4" type="video/mp4">
+</video>
+<div class="overlay"></div>
+
+<div class="container">
+  <div class="logo">
+    <img src="main-logo.png" alt="Oasis Logo">
+  </div>
+  <div class="text-container">
+    <h1 class="oasis-text"></h1>
+    <p class="slogan-text"></p>
+  </div>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    const oasisText = document.querySelector('.oasis-text');
+    const letters = oasisText.textContent.split('');
+    oasisText.textContent = '';
+
+    letters.forEach((letter, index) => {
+        const span = document.createElement('span');
+        span.textContent = letter;
+        span.style.opacity = '0';
+        span.style.transform = 'translateY(20px)';
+        span.style.transition = `opacity 0.5s ease-out ${0.1 * index}s, transform 0.5s ease-out ${0.1 * index}s`;
+        oasisText.appendChild(span);
+
+        setTimeout(() => {
+            span.style.opacity = '1';
+            span.style.transform = 'translateY(0)';
+        }, 1500);
+    });
+
+    // Floating particles
+    for(let i=0;i<50;i++){
+        const particle = document.createElement('div');
+        particle.classList.add('particle');
+        particle.style.left = Math.random()*window.innerWidth + 'px';
+        particle.style.top = window.innerHeight + 'px';
+        particle.style.animationDelay = Math.random()*5 + 's';
+        particle.style.width = (Math.random()*4 + 2) + 'px';
+        particle.style.height = (Math.random()*4 + 2) + 'px';
+        particle.style.opacity = Math.random();
+        document.body.appendChild(particle);
+    }
+
+    // Redirect on click anywhere
+    document.body.addEventListener('click', () => {
+        window.location.href = "5.html"; // Replace with your login page URL
+    });
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Mama Canteen</title>
+
+  <!-- Fonts & Icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <style>
+    /* ----- Reset ----- */
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Inter", sans-serif; }
+    html,body { height: 100%; width: 100%; }
+
+    /* ----- Body background fallback (image) ----- */
+    body {
+      min-height: 100vh;
+      background: url("{{ url_for('static', filename='assets/background.webp') }}") center/cover no-repeat fixed;
+      color: #fff;
+      overflow: hidden;
+    }
+
+    /* ----- Video (top layer over image) ----- */
+    .bg-video {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: 0;              /* below overlay and UI */
+      display: block;
+    }
+
+    /* subtle overlay so text is readable */
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(4,20,48,0.18), rgba(2,6,20,0.55));
+      z-index: 1;
+    }
+
+    /* ----- Page content (nav + centered area) ----- */
+    .page {
+      position: relative;
+      z-index: 2; /* above video & overlay */
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ----- Navbar ----- */
+    nav {
+      width: 92%;
+      max-width: 1200px;
+      margin: 20px auto 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .logo { font-weight: 700; font-size: 1.6rem; color: #fff; text-shadow: 0 1px 4px rgba(0,0,0,0.6); }
+    nav ul { list-style: none; display: flex; gap: 30px; align-items:center; }
+    nav a { color: #fff; text-decoration: none; font-weight: 600; opacity: 0.95; }
+    nav a:hover { color: #8ee1ff; }
+
+    .login-btn {
+      border: 1px solid rgba(255,255,255,0.9);
+      padding: 7px 14px;
+      border-radius: 8px;
+      display:inline-block;
+      transition: all .18s ease;
+      background: rgba(255,255,255,0.02);
+      cursor: pointer;
+    }
+    .login-btn:hover { background: rgba(255,255,255,0.12); color: #001; }
+
+    /* ----- Center area ----- */
+    .hero-content {
+      text-align: center;
+      color: #fff;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.7);
+      transition: opacity .4s ease, transform .4s ease;
+    }
+    .hero-content h1 {
+      font-size: 3.5rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+    }
+    .hero-content p {
+      font-size: 1.25rem;
+      max-width: 550px;
+      margin: 0 auto 1.5rem;
+      opacity: 0.9;
+    }
+    .hero-content.hidden {
+      opacity: 0;
+      transform: translateY(-10px);
+      pointer-events: none;
+      position: absolute;
+    }
+    .center-wrap {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+    }
+
+    /* ----- Login box (glass) ----- */
+    .login-box {
+      width: 380px;
+      max-width: calc(100% - 40px);
+      padding: 36px 36px 28px;
+      border-radius: 14px;
+      background: linear-gradient(180deg, rgba(24,64,120,0.25), rgba(8,18,40,0.28));
+      border: 1px solid rgba(255,255,255,0.12);
+      box-shadow: 0 10px 28px rgba(2,8,20,0.65), inset 0 1px 0 rgba(255,255,255,0.02);
+      backdrop-filter: blur(10px) saturate(120%);
+      position: relative;
+      text-align: center;
+      color: rgba(255,255,255,0.95);
+      transition: transform .28s ease, opacity .28s ease;
+    }
+
+    /* Slight highlight in center like the screenshot */
+    .login-box::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: 14px;
+      pointer-events: none;
+      background: radial-gradient( circle at 50% 12%, rgba(255,255,255,0.03), transparent 25% );
+    }
+
+    .close-btn {
+      position: absolute;
+      top: -12px;
+      right: -12px;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: rgba(0,0,0,0.6);
+      border: 2px solid rgba(255,255,255,0.95);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: #fff;
+      font-weight: 700;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+    }
+
+    .login-box h2 {
+      font-size: 28px;
+      margin-bottom: 18px;
+      letter-spacing: 0.2px;
+    }
+
+    /* inputs */
+    .input-group { position: relative; margin: 18px 0; }
+    .input-group input {
+      width: 100%;
+      padding: 12px 44px 10px 8px;
+      background: transparent;
+      border: none;
+      border-bottom: 2px solid rgba(255,255,255,0.16);
+      color: rgba(255,255,255,0.95);
+      outline: none;
+      font-size: 15px;
+    }
+    .input-group input::placeholder { color: rgba(255,255,255,0.55); font-weight: 500; }
+
+    .input-group .icon {
+      position: absolute;
+      right: 8px;
+      top: 50%;
+      transform: translateY(-50%);
+      pointer-events: none;
+      color: rgba(255,255,255,0.7);
+      font-size: 14px;
+    }
+
+    .options {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 13px;
+      margin-top: 6px;
+      color: rgba(255,255,255,0.86);
+    }
+    .options label { display:flex; gap:8px; align-items:center; font-weight:500; }
+    .options a { color: rgba(142,225,255,0.95); text-decoration: none; font-weight:600; }
+
+    .btn-login {
+      margin-top: 18px;
+      width: 100%;
+      padding: 12px;
+      border-radius: 10px;
+      border: none;
+      background: linear-gradient(180deg,#0f1114,#0b1116);
+      color: #fff;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 6px 14px rgba(0,0,0,0.5), inset 0 -3px 6px rgba(255,255,255,0.02);
+    }
+    .btn-login:hover { background: linear-gradient(180deg,#0088d1,#006fa8); }
+    .btn-login.hero-btn {
+      padding: 14px 32px;
+      font-size: 1.1rem;
+    }
+
+    .register-link { margin-top: 14px; color: rgba(255,255,255,0.55); font-size: 14px; }
+    .register-link a { color: rgba(140,200,255,0.95); text-decoration: none; font-weight:600; }
+
+    /* hide state (for toggling) */
+    .login-box.hidden {
+      opacity: 0;
+      transform: translateY(-10px) scale(.995);
+      pointer-events: none;
+      visibility: hidden;
+    }
+
+    /* responsive */
+    @media (max-width:480px){
+      .login-box{ width: 92%; padding: 28px 18px; }
+      nav{ width: 94%; }
+      .hero-content h1 { font-size: 2.5rem; }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Background video (replace 'stars.mp4' with your video file) -->
+  <video id="bgVideo" class="bg-video" autoplay muted loop playsinline>
+    <source src="{{ url_for('static', filename='assets/1.6.mp4') }}" type="video/mp4">
+    <!-- optional webm fallback -->
+    <source src="{{ url_for('static', filename='assets/stars.webm') }}" type="video/webm">
+    <!-- If video fails or is blocked, the body background image (background.webp) is visible -->
+  </video>
+
+  <div class="overlay"></div>
+
+  <div class="page">
+    <!-- Navbar -->
+    <nav>
+      <div class="logo">Mama Canteen</div>
+      <ul>
+        <li><a href="{{ url_for('home') }}">Home</a></li>
+        <li><a href="{{ url_for('about_page') }}">About</a></li>
+        <li><a href="{{ url_for('contact_page') }}">Contact</a></li>
+        <li><a href="#" class="login-btn" id="openLogin">Login</a></li>
+      </ul>
+    </nav>
+
+    <!-- Centered content (login box) -->
+    <div class="center-wrap">
+      <!-- Login Form -->
+      <div class="login-box" id="loginBox" >
+        <div class="close-btn" id="closeLogin" title="Close">&times;</div>
+        <h2>Login</h2>
+        <form action="{{ url_for('auth_handler') }}" method="POST">
+          <input type="hidden" name="form_type" value="login">
+          <div class="input-group">
+            <input type="text" name="login-identifier" id="login-identifier" placeholder="Email or Contact" required>
+            <i class="fa-solid fa-user icon"></i>
+          </div>
+          <div class="input-group">
+            <input type="password" name="login-password" id="login-password" placeholder="Password" required>
+            <i class="fa-solid fa-lock icon"></i>
+          </div>
+          <div class="options">
+            <label><input type="checkbox" id="remember"> Remember me</label>
+            <a href="{{ url_for('forgot_password_page') }}">Forgot Password?</a>
+          </div>
+          <button type="submit" class="btn-login">Login</button>
+          <div class="register-link">Don't have an account? <a href="#" id="showRegister">Register</a></div>
+        </form>
+      </div>
+
+      <!-- Registration Form -->
+      <div class="login-box hidden" id="registerBox">
+        <div class="close-btn" id="closeRegister" title="Close">&times;</div>
+        <h2>Register</h2>
+        <form action="{{ url_for('auth_handler') }}" method="POST">
+          <input type="hidden" name="form_type" value="signup">
+          <div class="input-group">
+            <input type="text" name="signup-name" placeholder="Full Name" required>
+            <i class="fa-solid fa-user icon"></i>
+          </div>
+          <div class="input-group">
+            <input type="email" name="signup-email" placeholder="Email" required>
+            <i class="fa-solid fa-envelope icon"></i>
+          </div>
+          <div class="input-group">
+            <input type="text" name="signup-contact" placeholder="Contact Number" required>
+            <i class="fa-solid fa-phone icon"></i>
+          </div>
+          <div class="input-group">
+            <input type="text" name="signup-address" placeholder="Address" required>
+            <i class="fa-solid fa-map-marker-alt icon"></i>
+          </div>
+          <div class="input-group">
+            <input type="date" name="signup-dob" placeholder="Date of Birth" required style="color-scheme: dark;">
+          </div>
+          <div class="input-group">
+            <input type="password" name="signup-password" placeholder="Password" required>
+            <i class="fa-solid fa-lock icon"></i>
+          </div>
+          <div class="input-group">
+            <input type="password" name="signup-confirm-password" placeholder="Confirm Password" required>
+            <i class="fa-solid fa-lock icon"></i>
+          </div>
+          <button type="submit" class="btn-login">Register</button>
+          <div class="register-link">Already have an account? <a href="#" id="showLogin">Login</a></div>
+        </form>
+      </div>
+
+      <!-- Login Form -->
+      <div class="login-box" id="loginBox" >
+        <div class="close-btn" id="closeLogin" title="Close">&times;</div>
+        <h2>Login</h2>
+        <form action="{{ url_for('auth_handler') }}" method="POST">
+          <input type="hidden" name="form_type" value="login">
+          <div class="input-group">
+            <input type="text" name="login-identifier" id="login-identifier" placeholder="Email or Contact" required>
+            <i class="fa-solid fa-user icon"></i>
+          </div>
+          <div class="input-group">
+            <input type="password" name="login-password" id="login-password" placeholder="Password" required>
+            <i class="fa-solid fa-lock icon"></i>
+          </div>
+          <div class="options">
+            <label><input type="checkbox" id="remember"> Remember me</label>
+            <a href="{{ url_for('forgot_password_page') }}">Forgot Password?</a>
+          </div>
+          <button type="submit" class="btn-login">Login</button>
+          <div class="register-link">Don't have an account? <a href="#" id="showRegister">Register</a></div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Robust DOM references
+    const openLogin = document.getElementById('openLogin');
+    const loginBox = document.getElementById('loginBox');
+    const registerBox = document.getElementById('registerBox');
+    const closeLogin = document.getElementById('closeLogin');
+    const closeRegister = document.getElementById('closeRegister');
+    const bgVideo = document.getElementById('bgVideo');
+    const showRegister = document.getElementById('showRegister');
+    const showLogin = document.getElementById('showLogin');
+
+    // Open login when navbar Login clicked
+    openLogin && openLogin.addEventListener('click', function (e) {
+      e.preventDefault();
+      loginBox.classList.remove('hidden');
+      registerBox.classList.add('hidden');
+      // ensure focus
+      setTimeout(()=> document.getElementById('login-identifier').focus(),150);
+    });
+
+    // Close button
+    closeLogin && closeLogin.addEventListener('click', function () {
+      loginBox.classList.add('hidden');
+    });
+    closeRegister && closeRegister.addEventListener('click', function () {
+      registerBox.classList.add('hidden');
+    });
+
+    // Click outside to close (but not when clicking nav login)
+    document.addEventListener('click', function (evt) {
+      const target = evt.target;
+      if (!loginBox.contains(target) && !registerBox.contains(target) && target !== openLogin && !openLogin.contains(target)) {
+        loginBox.classList.add('hidden');
+        registerBox.classList.add('hidden');
+      }
+    });
+
+    // Fallback: hide video gracefully if it errors (or can't play)
+    if (bgVideo) {
+      bgVideo.addEventListener('error', () => {
+        console.warn('Background video failed to load — falling back to static image.');
+        bgVideo.style.display = 'none';
+      });
+
+      // If the browser blocks autoplay, hide video (fallback to image)
+      bgVideo.addEventListener('play', ()=> { /* ok */ });
+      bgVideo.addEventListener('pause', ()=> { /* no-op */ });
+    }
+
+    // Toggle between Login and Register forms
+    showRegister.addEventListener('click', (e) => {
+      e.preventDefault();
+      loginBox.classList.add('hidden');
+      registerBox.classList.remove('hidden');
+    });
+
+    showLogin.addEventListener('click', (e) => {
+      e.preventDefault();
+      registerBox.classList.add('hidden');
+      loginBox.classList.remove('hidden');
+    });
+
+    // If you want login to be visible initially (like the screenshot),
+    // remove the 'hidden' class from HTML or uncomment the next line:
+    loginBox.classList.remove('hidden');
+  </script>
+</body>
+</html>

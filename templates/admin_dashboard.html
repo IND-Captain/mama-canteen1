@@ -1,0 +1,78 @@
+{% extends "layout.html" %}
+
+{% block title %}Admin Dashboard - Oasis{% endblock %}
+{% block body_class %}page-admin-dashboard{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="container">
+        <h1 class="page-title animate-on-scroll"><i class="fas fa-tachometer-alt"></i> Admin Dashboard</h1>
+        <p class="page-subtitle animate-on-scroll" data-stagger-index="1">Manage your application's data.</p>
+    </div>
+</div>
+
+<section class="content-section">
+    <div class="container">
+        <div class="admin-tabs">
+            <button class="admin-tab active" data-tab="users">User Management ({{ data.users|length }})</button>
+        </div>
+
+        <!-- Users Tab -->
+        <div id="users-content" class="admin-tab-content active">
+            {% if data.users %}
+            <div class="table-responsive mt-4">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>User ID</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Contact</th>
+                            <th>Registered At</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for user in data.users %}
+                        <tr>
+                            <td>{{ user.user_id }}</td>
+                            <td>{{ user.username }}</td>
+                            <td>{{ user.email }}</td>
+                            <td>{{ user.contact or 'N/A' }}</td>
+                            <td>{{ user.created_at.strftime('%Y-%m-%d') }}</td>
+                            <td>
+                                <button class="btn btn-danger btn-sm delete-btn" data-action="{{ url_for('delete_user', user_id=user.user_id) }}" data-item-name="{{ user.username }}">Delete</button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="alert alert-info mt-4">No users found.</div>
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+<!-- Deletion Confirmation Modal -->
+<div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmDeleteModalLabel">Confirm Deletion</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to delete <strong id="item-to-delete-name">this item</strong>? This action cannot be undone.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <form id="delete-form" method="POST" style="display: inline;">
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

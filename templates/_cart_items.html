@@ -1,0 +1,67 @@
+{% if cart_products %}
+<div class="row g-5">
+    <div class="col-lg-8">
+        <div class="table-responsive">
+            <table class="table align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th scope="col" class="py-3">Product</th>
+                        <th scope="col" class="py-3">Price</th>
+                        <th scope="col" class="py-3">Quantity</th>
+                        <th scope="col" class="py-3">Subtotal</th>
+                        <th scope="col" class="py-3"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in cart_products %}
+                    <tr>
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <img src="{{ item.image_url }}" alt="{{ item.name }}" style="width: 60px; height: 60px; object-fit: cover; border-radius: 8px; margin-right: 15px;">
+                                <a href="{{ url_for('product_detail_page', product_id=item.product_id) }}" class="fw-bold text-dark text-decoration-none">{{ item.name }}</a>
+                            </div>
+                        </td>
+                        <td>₹{{ "%.2f"|format(item.price) }}</td>
+                        <td>
+                            <form action="{{ url_for('update_cart', product_id=item.product_id) }}" method="POST" class="d-flex align-items-center">
+                                <input type="number" name="quantity" value="{{ item.quantity }}" min="1" max="{{ item.stock }}" class="form-control form-control-sm" style="width: 70px;">
+                                <button type="submit" class="btn btn-sm btn-outline-secondary ms-2" title="Update Quantity"><i class="fas fa-sync-alt"></i></button>
+                            </form>
+                        </td>
+                        <td class="fw-bold">₹{{ "%.2f"|format(item.subtotal) }}</td>
+                        <td>
+                            <form action="{{ url_for('remove_from_cart', product_id=item.product_id) }}" method="POST">
+                                <button type="submit" class="btn btn-sm btn-outline-danger" title="Remove Item"><i class="fas fa-trash-alt"></i></button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="d-flex justify-content-between mt-4">
+            <a href="{{ url_for('home') }}" class="btn btn-outline-primary"><i class="fas fa-arrow-left"></i> Continue Shopping</a>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="form-container p-4 sticky-top" style="top: 120px;">
+            <h3 class="mb-4">Cart Total</h3>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                    Subtotal
+                    <span>₹{{ "%.2f"|format(total_price) }}</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                    Shipping
+                    <span>FREE</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center px-0 fw-bold fs-5">
+                    Total
+                    <span>₹{{ "%.2f"|format(total_price) }}</span>
+                </li>
+            </ul>
+            <a href="{{ url_for('checkout_page') }}" class="btn btn-primary w-100 mt-4">Proceed to Checkout</a>
+        </div>
+    </div>
+</div>
+{% endif %}

@@ -1,0 +1,28 @@
+{% extends "layout.html" %}
+
+{% block title %}Terms of Service - Oasis{% endblock %}
+{% block body_class %}page-legal{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="container">
+        <h1 class="page-title animate-on-scroll"><i class="fas fa-file-contract"></i> Terms of Service</h1>
+        <p class="page-subtitle animate-on-scroll" data-stagger-index="1">Please read these terms carefully.</p>
+    </div>
+</div>
+
+<section class="content-section">
+    <div class="container" style="max-width: 800px;">
+        <div class="legal-content">
+            <h2>1. Agreement to Terms</h2>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. By using our services, you agree to be bound by these Terms. If you disagree with any part of the terms, then you may not access the service. This is a placeholder document.</p>
+
+            <h2>2. Termination</h2>
+            <p>Proin porttitor, orci nec nonummy molestie, enim est eleifend mi, non fermentum diam nisl sit amet erat. We may terminate or suspend your account immediately, without prior notice or liability, for any reason whatsoever, including without limitation if you breach the Terms.</p>
+
+            <h2>3. Contact Us</h2>
+            <p>If you have any questions about these Terms, please <a href="{{ url_for('contact_page') }}">contact us</a>.</p>
+        </div>
+    </div>
+</section>
+{% endblock %}

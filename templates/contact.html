@@ -1,0 +1,108 @@
+{% extends "layout.html" %}
+
+{% block title %}Contact Us - Lumora{% endblock %}
+{% block body_class %}page-contact{% endblock %} 
+
+{% block content %}
+<div class="page-header">
+    <div class="container"> 
+        <h1 class="page-title animate-on-scroll"><i class="fas fa-envelope"></i> Get In Touch</h1>
+        <p class="page-subtitle animate-on-scroll" data-stagger-index="1">We're here to help. Send us a message and we'll respond as soon as possible.</p>
+    </div>
+</div>
+
+<section class="content-section" style="background: var(--gray-100); padding-bottom: 0;">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">Quick Answers</h2>
+            <p class="section-subtitle">Before you reach out, you might find your answer here.</p>
+        </div>
+        <div class="accordion" id="contactFaqAccordion" style="max-width: 800px; margin: 0 auto;">
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="contactFaqHeadingOne">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#contactFaqCollapseOne" aria-expanded="false" aria-controls="contactFaqCollapseOne">
+                        What is the purpose of this template?
+                    </button>
+                </h2>
+                <div id="contactFaqCollapseOne" class="accordion-collapse collapse" aria-labelledby="contactFaqHeadingOne" data-bs-parent="#contactFaqAccordion">
+                    <div class="accordion-body">This template is designed to provide a modern, responsive, and feature-rich starting point for web applications, saving you development time.</div>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="contactFaqHeadingTwo">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#contactFaqCollapseTwo" aria-expanded="false" aria-controls="contactFaqCollapseTwo">
+                        Is it easy to customize?
+                    </button>
+                </h2>
+                <div id="contactFaqCollapseTwo" class="accordion-collapse collapse" aria-labelledby="contactFaqHeadingTwo" data-bs-parent="#contactFaqAccordion">
+                    <div class="accordion-body">Yes, the code is organized into modular components, and the styling uses CSS variables for easy theme adjustments like changing the primary color.</div>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="contactFaqHeadingThree">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#contactFaqCollapseThree" aria-expanded="false" aria-controls="contactFaqCollapseThree">
+                        How do I update my profile?
+                    </button>
+                </h2>
+                <div id="contactFaqCollapseThree" class="accordion-collapse collapse" aria-labelledby="contactFaqHeadingThree" data-bs-parent="#contactFaqAccordion">
+                    <div class="accordion-body">Simply log in and navigate to the "My Profile" page from the sidebar. From there, you can edit your personal details and change your profile picture.</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="content-section" style="background: var(--gray-100); padding-top: 60px;">
+    <div class="container">
+        <div class="row justify-content-center g-5">
+            <div class="col-lg-8 animate-on-scroll">
+                <div class="form-container p-4 p-md-5">
+                    <form id="contact-form" action="{{ url_for('contact_page') }}" method="POST" novalidate>
+                        <div class="form-group">
+                            <input type="text" id="name" name="name" class="form-control" required placeholder=" ">
+                            <label for="name" class="form-label">Full Name</label>
+                            <div class="error-message"></div>
+                        </div>
+                        <div class="form-group">
+                            <input type="email" id="email" name="email" class="form-control" required placeholder=" ">
+                            <label for="email" class="form-label">Email Address</label>
+                            <div class="error-message"></div>
+                        </div>
+                        <div class="form-group">
+                            <textarea id="message" name="message" class="form-control" rows="7" required placeholder=" "></textarea>
+                            <label for="message" class="form-label">Message</label>
+                            <div class="error-message"></div>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100 btn-lg">Send Message</button>
+                    </form>
+                </div>
+            </div>
+            <div class="col-lg-8 contact-info text-center animate-on-scroll" data-stagger-index="1">
+                <h2 class="section-title">Contact Information</h2>
+                <p>For general inquiries, partnerships, or support, please use the form or contact us directly through the channels below.</p>
+                <div class="d-flex justify-content-center flex-wrap gap-4 my-4">
+                    <div class="info-item">
+                        <i class="fas fa-map-marker-alt fa-fw"></i>
+                        <span>123 Life-Saver St, Hope City, 12345</span>
+                    </div>
+                    <div class="info-item">
+                        <i class="fas fa-phone-alt fa-fw"></i>
+                        <a href="tel:+1234567890">+1 (234) 567-890</a>
+                    </div>
+                    <div class="info-item">
+                        <i class="fas fa-envelope fa-fw"></i>
+                        <a href="mailto:support@lumora.com">support@lumora.com</a>
+                    </div>
+                </div>
+                <h3 style="margin-top: 40px; margin-bottom: 20px; font-size: 1.5rem;">Follow Us</h3>
+                <div class="d-flex justify-content-center">
+                    {% include '_social_links.html' %}
+                </div>
+            </div>
+        </div>
+        <div class="text-center mt-4">
+            <a href="{{ url_for('faqs_page') }}" class="btn btn-outline-primary">See All FAQs <i class="fas fa-arrow-right"></i></a>
+        </div>
+    </div>
+</section>
+{% endblock %}

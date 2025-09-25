@@ -1,0 +1,107 @@
+{% extends "layout.html" %}
+
+{% block title %}Checkout - Canteen{% endblock %}
+{% block body_class %}page-checkout{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/canteen.css') }}">
+
+<div class="page-header">
+    <div class="container">
+        <h1 class="page-title animate-on-scroll"><i class="fas fa-credit-card"></i> Checkout</h1>
+        <p class="page-subtitle animate-on-scroll" data-stagger-index="1">Complete your order by providing the details below.</p>
+    </div>
+</div>
+
+<section class="content-section">
+    <div class="container checkout-container">
+        <!-- This container will be hidden and replaced by animations on submit -->
+        <div id="checkout-form-container">
+            <form id="checkout-form" action="{{ url_for('checkout_page') }}" method="POST">
+                <div class="row g-5">
+                    <div class="col-lg-7">
+                        <h3 class="mb-4">Billing Details</h3>
+                        <div class="row g-3">
+                            <div class="col-12 form-group">
+                                <input type="text" class="form-control" id="fullName" name="fullName" placeholder=" " required value="{{ user.name or '' }}">
+                                <label for="fullName" class="form-label">Full Name</label>
+                            </div>
+                            <div class="col-12 form-group">
+                                <input type="email" class="form-control" id="email" name="email" placeholder=" " required value="{{ user.email or '' }}">
+                                <label for="email" class="form-label">Email Address</label>
+                            </div>
+                            <div class="col-12 form-group">
+                                <input type="text" class="form-control" id="address" name="address" placeholder=" " required value="{{ user.address_line1 or '' }}">
+                                <label for="address" class="form-label">Address</label>
+                            </div>
+                            <div class="col-md-5 form-group">
+                                <input type="text" class="form-control" id="city" name="city" placeholder=" " required value="{{ user.city or '' }}">
+                                <label for="city" class="form-label">City</label>
+                            </div>
+                            <div class="col-md-4 form-group">
+                                <input type="text" class="form-control" id="state" name="state" placeholder=" " required value="{{ user.state or '' }}">
+                                <label for="state" class="form-label">State</label>
+                            </div>
+                            <div class="col-md-3 form-group">
+                                <input type="text" class="form-control" id="pincode" name="pincode" placeholder=" " required value="{{ user.pincode or '' }}">
+                                <label for="pincode" class="form-label">Pincode</label>
+                            </div>
+                        </div>
+                        <hr class="my-4">
+                        <h3 class="mb-3">Payment</h3>
+                        <p class="text-muted">For now, we only support Cash on Delivery. More options coming soon!</p>
+                    </div>
+                    <div class="col-lg-5">
+                        <div class="form-container p-4 sticky-top" style="top: 120px;">
+                            <h3 class="d-flex justify-content-between align-items-center mb-3">
+                                <span>Your Cart</span>
+                                <span class="badge bg-primary rounded-pill">{{ cart_item_count }}</span>
+                            </h3>
+                            <ul class="list-group mb-3">
+                                <!-- Cart items can be dynamically listed here if needed -->
+                                <li class="list-group-item d-flex justify-content-between">
+                                    <span>Total (INR)</span>
+                                    <strong>₹{{ "%.2f"|format(total_price) }}</strong>
+                                </li>
+                            </ul>
+                            <button type="submit" class="btn btn-primary w-100 btn-lg">Place Order</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <!-- Animation and Confirmation Sections (Initially Hidden) -->
+        <div id="post-checkout-container" style="display: none;">
+            <div class="form-section" id="paymentProcessingSection" style="text-align:center; padding: 40px 0;">
+                <h3 class="form-title" id="processingTitle">Processing Payment...</h3>
+                <div class="delivery-animation-container">
+                    <div class="animation-step" id="anim-step-1">
+                        <div class="animation-icon-wrapper"><i class="fas fa-check-circle"></i></div>
+                        <p>Order Confirmed</p>
+                    </div>
+                    <div class="animation-step" id="anim-step-2">
+                        <div class="animation-icon-wrapper"><i class="fas fa-utensils"></i></div>
+                        <p>Preparing Your Meal</p>
+                    </div>
+                    <div class="animation-step" id="anim-step-3">
+                        <div class="animation-icon-wrapper"><i class="fas fa-motorcycle"></i></div>
+                        <p>Out for Delivery</p>
+                    </div>
+                </div>
+            </div>
+            <div class="form-section" id="confirmationSection" style="text-align:center; padding:40px 0; display: none;">
+                <div style="font-size:4rem; color: var(--theme-accent); margin-bottom: 20px;"><i class="fas fa-check-circle"></i></div>
+                <h3 class="form-title">Thank You!</h3>
+                <p style="color: var(--text-muted); margin-bottom: 30px;">Your order has been successfully placed. You can track it in 'My Orders'.</p>
+                <a href="{{ url_for('home') }}" class="btn btn-primary"><i class="fas fa-utensils"></i> Order Again</a>
+                <a href="{{ url_for('my_orders_page') }}" class="btn btn-secondary" style="margin-left: 10px;"><i class="fas fa-receipt"></i> View My Orders</a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/checkout.js') }}"></script>
+{% endblock %}
