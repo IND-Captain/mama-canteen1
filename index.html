@@ -1,0 +1,89 @@
+{% extends "layout.html" %}
+
+{% block title %}Home - Mama Canteen{% endblock %}
+{% block body_class %}page-home{% endblock %}
+
+{% block content %}
+<section class="hero-section">
+    <video autoplay muted loop playsinline class="hero-video-bg" src="/static/assets/1.6.mp4"></video>
+    <div class="hero-overlay"></div>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 text-center">
+                <div class="hero-text">
+                    <h1 class="hero-title animate-on-scroll" data-translate="hero_title">Mama's Canteen</h1>
+                    <p class="hero-subtitle animate-on-scroll" data-stagger-index="1" data-translate="hero_subtitle">Deliciously crafted meals, delivered fast. Experience the taste of home, from our kitchen to your table.</p>
+                    <div class="hero-buttons animate-on-scroll" data-stagger-index="2">
+                        <a href="#products-grid" class="btn btn-primary btn-lg" data-translate="order_now_btn"><i class="fas fa-shopping-bag"></i> Order Now</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="products-grid" class="content-section py-5">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title" data-translate="menu_title">Our Menu</h2>
+            <p class="section-subtitle" data-translate="menu_subtitle">Discover our curated selection of high-quality meals.</p>
+        </div>
+        <div class="product-controls">
+            <div class="product-filters">
+                <button class="filter-btn active" data-filter="all" data-translate="filter_all">All Items</button>
+                <button class="filter-btn" data-filter="mains" data-translate="filter_mains">Main Courses</button>
+                <button class="filter-btn" data-filter="appetizers" data-translate="filter_appetizers">Appetizers</button>
+                <button class="filter-btn" data-filter="desserts" data-translate="filter_desserts">Desserts</button>
+                <button class="filter-btn" data-filter="beverages" data-translate="filter_beverages">Beverages</button>
+            </div>
+            <div class="sort-container">
+                <label for="sort-by" class="form-label-inline">Sort By:</label>
+                <select id="sort-by" class="form-select form-select-sm">
+                    <option value="default">Default</option>
+                    <option value="price-asc">Price: Low to High</option>
+                    <option value="price-desc">Price: High to Low</option>
+                    <option value="name-asc">Name: A to Z</option>
+                    <option value="name-desc">Name: Z to A</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="product-grid-3">
+            {% for product in products %}
+            <div class="product-item animate-on-scroll" data-category="{{ product.category }}" data-price="{{ product.price }}" data-name="{{ product.name }}">
+                <div class="product-card h-100">
+                    <a href="{{ url_for('product_detail_page', product_id=product.product_id) }}" class="product-image-link">
+                        <img src="{{ product.image }}" alt="{{ product.name }}" class="product-image" loading="lazy">
+                    </a>
+                    <div class="product-card-body">
+                        <h3 class="product-title"><a href="{{ url_for('product_detail_page', product_id=product.product_id) }}">{{ product.name }}</a></h3>
+                        <div class="product-rating">
+                            {% if product.rating %}
+                                <i class="fas fa-star"></i> {{ product.rating }}
+                                <span class="review-count">({{ product.reviews or 0 }})</span>
+                            {% endif %}
+                        </div>
+                        <p class="product-price">₹{{ "%.2f"|format(product.price) }}</p>
+                        <div class="product-card-footer">
+                            <form action="{{ url_for('add_to_cart', product_id=product.product_id) }}" method="post" class="add-to-cart-form d-flex gap-2">
+                                <div class="quantity-controls d-flex">
+                                    <button type="button" class="btn btn-secondary btn-sm btn-qty" data-step="-1">-</button>
+                                    <input type="number" name="quantity" value="1" min="1" class="form-control form-control-sm quantity-input text-center" style="width: 50px;">
+                                    <button type="button" class="btn btn-secondary btn-sm btn-qty" data-step="1">+</button>
+                                </div>
+                                <button type="submit" class="btn btn-primary btn-sm flex-grow-1"><i class="fas fa-cart-plus"></i></button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% else %}
+            <div class="col-12"><p class="text-center text-muted">No menu items found. Please add some in the admin panel.</p></div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+{% endblock %}
