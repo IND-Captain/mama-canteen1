@@ -1,0 +1,88 @@
+{% extends "layout.html" %}
+
+{% block title %}{{ product.name }} - Mama Canteen{% endblock %}
+{% block body_class %}page-product-detail{% endblock %}
+
+{% block content %}
+<div class="page-header" style="background: var(--light-green);">
+    <div class="container">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ url_for('home') }}">Menu</a></li>
+                <li class="breadcrumb-item active" aria-current="page">{{ product.name }}</li>
+            </ol>
+        </nav>
+        <h1 class="page-title" style="color: var(--dark-green);">{{ product.name }}</h1>
+        <p class="page-subtitle" style="color: var(--dark-green);">{{ product.category|capitalize }}</p>
+    </div>
+</div>
+
+<section class="content-section">
+    <div class="container">
+        <div class="row g-5">
+            <div class="col-lg-6 animate-on-scroll">
+               <img src="{{ url_for('static', filename=product.image) }}" alt="{{ product.name }}" class="img-fluid rounded-3 shadow-lg" style="width: 100%; height: auto; aspect-ratio: 4/3; object-fit: cover;">
+            </div>
+
+            <div class="col-lg-6 animate-on-scroll" data-stagger-index="1">
+                <div class="product-details-content">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <h2 class="mb-0" style="font-weight: 700;">{{ product.name }}</h2>
+                        {% if product.rating %}
+                        <div class="product-rating fs-5">
+                            <i class="fas fa-star"></i> {{ product.rating }}
+                            <span class="review-count fs-6">({{ product.reviews or 0 }})</span>
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <p class="product-price-large mb-3">₹{{ "%.2f"|format(product.price) }}</p>
+
+                    <p class="text-muted">{{ product.description }}</p>
+
+                    <div class="mt-4">
+                        <form action="{{ url_for('add_to_cart', product_id=product.product_id) }}" method="post" class="add-to-cart-form d-flex gap-3">
+                            <div class="quantity-controls d-flex">
+                                <button type="button" class="btn btn-secondary btn-qty" data-step="-1">-</button>
+                                <input type="number" name="quantity" value="1" min="1" class="form-control quantity-input text-center" style="width: 60px;">
+                                <button type="button" class="btn btn-secondary btn-qty" data-step="1">+</button>
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-lg flex-grow-1">
+                                <i class="fas fa-cart-plus"></i> Add to Cart
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="reviews-section mt-5 pt-5 border-top">
+            <h3 class="section-title text-center mb-4">Customer Reviews</h3>
+            {% if reviews %}
+                <div class="row g-4">
+                    {% for review in reviews %}
+                    <div class="col-md-6">
+                        <div class="testimonial-card h-100">
+                            <div class="testimonial-author mb-3">
+                                <img src="{{ url_for('static', filename='uploads/profile_pics/default-avatar.png') }}" alt="{{ review.user_name }}">
+                                <div class="author-info">
+                                    <h5>{{ review.user_name }}</h5>
+                                    <div class="product-rating">
+                                        {% for i in range(review.rating) %}<i class="fas fa-star"></i>{% endfor %}{% for i in range(5 - review.rating) %}<i class="far fa-star"></i>{% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                            <p class="testimonial-text">{{ review.comment }}</p>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="text-center text-muted">
+                    <p>No reviews for this product yet. Be the first to leave a review!</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</section>
+{% endblock %}

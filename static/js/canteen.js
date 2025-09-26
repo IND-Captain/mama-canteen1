@@ -1,23 +1,16 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // Data Model: Menu Items
     let menuItems = [];
 
-    // Orders storage structure
-    let orders = JSON.parse(localStorage.getItem('orders')) || [];
+    let orders = []; // This will be populated from server-provided data
 
-    // Current filters
     let currentFilter = 'all';
     let currentVegFilter = 'all';
 
-    // Selected payment method
     let selectedPaymentMethod = null;
 
-    // State trackers
     let currentOrder = null;
 
-    // --- UTILITY FUNCTIONS ---
     function showNotification(message, type = 'success') {
-        // Assuming a global showAlert function exists from your main script.js
         if (window.showAlert) {
             window.showAlert(message, type);
         } else {
@@ -34,7 +27,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (savedMenu) {
             try {
                 const parsedMenu = JSON.parse(savedMenu);
-                // This ensures that if we update the base menuItems array, the quantities are preserved but other details are up-to-date.
                 menuItems.forEach(item => {
                     const savedItem = parsedMenu.find(i => i.id === item.id);
                     if (savedItem) {
@@ -51,14 +43,9 @@ document.addEventListener('DOMContentLoaded', () => {
         localStorage.setItem('orders', JSON.stringify(orders));
     }
 
-    // --- PAGE-SPECIFIC INITIALIZERS ---
-
-    /**
-     * Initializes the Menu page (index.html)
-     */
     function initMenuPage() {
         const menuGrid = document.getElementById('menuGrid');
-        if (!menuGrid) return; // Only run on the menu page
+        if (!menuGrid) return;
 
         async function fetchAndRenderMenu() {
             try {
@@ -68,7 +55,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
                 const data = await response.json();
                 menuItems = data;
-                loadMenuFromStorage(); // Load quantities for items already in cart
+                loadMenuFromStorage();
                 renderMenu();
                 updateOrderSummary();
             } catch (error) {
@@ -143,7 +130,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 showNotification(`${item.name} added to cart.`);
                 updateOrderSummary();
                 saveMenuToStorage();
-                renderMenu(); // Re-render to update button state
+                renderMenu();
             } else {
                 showNotification(`Sorry, no more stock available for ${item.name}.`, 'warning');
             }
@@ -198,20 +185,21 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         proceedToCheckout.addEventListener('click', () => {
-            // In a multi-page app, we redirect
             window.location.href = proceedToCheckout.dataset.url;
         });
 
-        // Initial render
         fetchAndRenderMenu();
     }
 
-    /**
-     * Initializes the My Orders page
-     */
     function initOrdersPage() {
         const ordersContainer = document.getElementById('ordersContainer');
         if (!ordersContainer) return;
+        
+        // Use server-provided orders if available, otherwise initialize as empty
+        // The 'My Orders' page should primarily display data from the backend.
+        if (window.serverOrders && Array.isArray(window.serverOrders)) {
+            orders = window.serverOrders;
+        }
 
         function renderOrders() {
             if (orders.length === 0) {
@@ -228,27 +216,43 @@ document.addEventListener('DOMContentLoaded', () => {
             orders.forEach(order => {
                 const card = document.createElement('div');
                 card.className = 'order-card';
-                let progressPercent = order.progress || 0;
+
+                // Map backend status to client-side progress and step activation
+                let progressPercent = 0;
+                let statusConfirmed = '';
+                let statusCrafting = '';
+                let statusReady = '';
+
+                // Assuming 'Processing' is the initial status from the backend
+                if (order.status === 'Processing') {
+                    progressPercent = 33;
+                    statusConfirmed = 'active';
+                }
+                // If the backend had more statuses (e.g., 'Preparing', 'Out for Delivery', 'Delivered'),
+                // you would add more conditions here to activate subsequent steps.
+                // Example:
+                // else if (order.status === 'Preparing') { /* ... */ }
+                // else if (order.status === 'Out for Delivery' || order.status === 'Delivered') { /* ... */ }
 
                 card.innerHTML = `
                     <div class="order-header">
-                        <span>Order ${order.id}</span>
-                        <span>${order.time}</span>
+                        <span>Order #${order.order_id}</span>
+                        <span>${new Date(order.created_at).toLocaleString()}</span>
                     </div>
                     <div class="progress-container" aria-label="Order progress">
                         <div class="progress-bar">
                             <div class="progress-fill" style="width:${progressPercent}%;"></div>
                         </div>
                         <div class="progress-steps">
-                            <div class="progress-step ${order.status === 'confirmed' || order.status === 'crafting' || order.status === 'ready' ? 'active' : ''}">
+                            <div class="progress-step ${statusConfirmed}">
                                 <div class="step-icon"><i class="fas fa-check"></i></div>
                                 <span>Confirmed</span>
                             </div>
-                            <div class="progress-step ${order.status === 'crafting' || order.status === 'ready' ? 'active' : ''}">
+                            <div class="progress-step ${statusCrafting}">
                                 <div class="step-icon"><i class="fas fa-utensils"></i></div>
                                 <span>Shadow Crafting</span>
                             </div>
-                            <div class="progress-step ${order.status === 'ready' ? 'active' : ''}">
+                            <div class="progress-step ${statusReady}">
                                 <div class="step-icon"><i class="fas fa-moon"></i></div>
                                 <span>Ready</span>
                             </div>
@@ -256,11 +260,13 @@ document.addEventListener('DOMContentLoaded', () => {
                     </div>
                     <div>
                         <h4 style="color: var(--text-bright); margin: 15px 0 10px;">Dark Order Details</h4>
-                        <ul>
-                            ${order.items.map(item => `<li>${item.name} x${item.quantity} - <span style="color: var(--accent-gold)">${item.price * item.quantity} INR</span></li>`).join('')}
+                        <ul class="order-items-list">
+                            <!-- Order items are not fetched by my_orders_page for brevity. -->
+                            <!-- You can view full details including items on the order details page. -->
+                            <li><a href="/order/${order.order_id}">View Order Details</a></li>
                         </ul>
                     </div>
-                    <div class="order-total">Total ${order.total} INR</div>
+                    <div class="order-total">Total ${order.total_amount} INR</div>
                 `;
                 ordersContainer.appendChild(card);
             });
@@ -269,9 +275,6 @@ document.addEventListener('DOMContentLoaded', () => {
         renderOrders();
     }
 
-    /**
-     * Initializes the Checkout page
-     */
     function initCheckoutPage() {
         const checkoutForm = document.getElementById('checkoutForm');
         if (!checkoutForm) return;
@@ -426,36 +429,30 @@ document.addEventListener('DOMContentLoaded', () => {
             payButton.disabled = true;
             payButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
 
-            // Hide review and payment sections, show animation section
             orderReviewSection.style.display = 'none';
             paymentSection.style.display = 'none';
             paymentProcessingSection.classList.add('active');
 
-            // --- Animation Sequence ---
             const animStep1 = document.getElementById('anim-step-1');
             const animStep2 = document.getElementById('anim-step-2');
             const animStep3 = document.getElementById('anim-step-3');
             const processingTitle = document.getElementById('processingTitle');
 
-            // 1. Order Confirmed
             setTimeout(() => {
                 animStep1.classList.add('active');
                 processingTitle.textContent = 'Order Confirmed!';
             }, 1000);
 
-            // 2. Preparing Your Meal
             setTimeout(() => {
                 animStep2.classList.add('active');
                 processingTitle.textContent = 'Preparing Your Meal...';
             }, 2500);
 
-            // 3. Out for Delivery
             setTimeout(() => {
                 animStep3.classList.add('active');
                 processingTitle.textContent = 'Your Order is on its Way!';
             }, 4000);
 
-            // 4. Finalize and show confirmation
             setTimeout(() => {
                 const selected = menuItems.filter(i => i.quantity > 0);
                 if (selected.length === 0) {
@@ -490,11 +487,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 confirmedOrderIdElem.textContent = currentOrder.id;
                 confirmedOrderTotalElem.textContent = currentOrder.total;
 
-                // Hide animation and go to final confirmation step
                 paymentProcessingSection.classList.remove('active');
                 goToStep(3);
                 showNotification('Payment successful! Your order has been placed.');
-            }, 5500); // Total time for all animations + processing
+            }, 5500);
         }
 
         function showReceipt(order) {
@@ -513,7 +509,6 @@ document.addEventListener('DOMContentLoaded', () => {
             receiptModal.style.display = 'none';
         }
 
-        // Event Listeners for Checkout
         continueToPaymentBtn.addEventListener('click', () => goToStep(2));
         backToStep1Btn.addEventListener('click', () => goToStep(1));
         paymentOptions.forEach(option => {
@@ -540,15 +535,12 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
 
-        // Initial render
         renderCheckout();
         goToStep(1);
     }
 
-    // --- GLOBAL INITIALIZATION ---
     loadMenuFromStorage();
 
-    // Run the correct initializer based on the body's class
     if (document.body.classList.contains('page-canteen-menu')) {
         initMenuPage();
     } else if (document.body.classList.contains('page-canteen-orders')) {

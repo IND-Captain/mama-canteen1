@@ -65,12 +65,10 @@ document.addEventListener('DOMContentLoaded', () => {
         setLanguage(e.target.value);
     });
 
-    // On page load, check for a saved language preference
     const savedLanguage = localStorage.getItem('selectedLanguage');
     if (savedLanguage) {
         setLanguage(savedLanguage);
     } else {
-        // Optional: Detect browser language and set it as default
         const browserLang = navigator.language.split('-')[0];
         if (translations[browserLang]) {
             setLanguage(browserLang);

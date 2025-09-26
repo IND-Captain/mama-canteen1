@@ -4,7 +4,6 @@
 {% block body_class %}page-home{% endblock %}
 
 {% block content %}
-<!-- HERO SECTION -->
 <section class="hero-section">
     <video autoplay muted loop playsinline class="hero-video-bg" src="/static/assets/1.6.mp4"></video>
     <div class="hero-overlay"></div>
@@ -12,7 +11,7 @@
         <div class="row justify-content-center">
             <div class="col-lg-8 text-center">
                 <div class="hero-text">
-                    <h1 class="hero-title animate-on-scroll" data-translate="hero_title">Mama Canteen</h1>
+                    <h1 class="hero-title animate-on-scroll" data-translate="hero_title">Mama's Canteen</h1>
                     <p class="hero-subtitle animate-on-scroll" data-stagger-index="1" data-translate="hero_subtitle">Deliciously crafted meals, delivered fast. Experience the taste of home, from our kitchen to your table.</p>
                     <div class="hero-buttons animate-on-scroll" data-stagger-index="2">
                         <a href="#products-grid" class="btn btn-primary btn-lg" data-translate="order_now_btn"><i class="fas fa-shopping-bag"></i> Order Now</a>
@@ -23,7 +22,6 @@
     </div>
 </section>
 
-<!-- PRODUCTS SECTION -->
 <section id="products-grid" class="content-section py-5">
     <div class="container">
         <div class="section-header">
@@ -31,7 +29,6 @@
             <p class="section-subtitle" data-translate="menu_subtitle">Discover our curated selection of high-quality meals.</p>
         </div>
         <div class="product-controls">
-            <!-- Product Filters -->
             <div class="product-filters">
                 <button class="filter-btn active" data-filter="all" data-translate="filter_all">All Items</button>
                 <button class="filter-btn" data-filter="mains" data-translate="filter_mains">Main Courses</button>
@@ -39,7 +36,6 @@
                 <button class="filter-btn" data-filter="desserts" data-translate="filter_desserts">Desserts</button>
                 <button class="filter-btn" data-filter="beverages" data-translate="filter_beverages">Beverages</button>
             </div>
-            <!-- Sort Dropdown -->
             <div class="sort-container">
                 <label for="sort-by" class="form-label-inline">Sort By:</label>
                 <select id="sort-by" class="form-select form-select-sm">
@@ -56,11 +52,11 @@
             {% for product in products %}
             <div class="product-item animate-on-scroll" data-category="{{ product.category }}" data-price="{{ product.price }}" data-name="{{ product.name }}">
                 <div class="product-card h-100">
-                    <a href="#" class="product-image-link">
+                    <a href="{{ url_for('product_detail_page', product_id=product.product_id) }}" class="product-image-link">
                         <img src="{{ product.image }}" alt="{{ product.name }}" class="product-image" loading="lazy">
                     </a>
                     <div class="product-card-body">
-                        <h3 class="product-title"><a href="#">{{ product.name }}</a></h3>
+                        <h3 class="product-title"><a href="{{ url_for('product_detail_page', product_id=product.product_id) }}">{{ product.name }}</a></h3>
                         <div class="product-rating">
                             {% if product.rating %}
                                 <i class="fas fa-star"></i> {{ product.rating }}
@@ -90,5 +86,4 @@
 {% endblock %}
 
 {% block scripts %}
-<!-- The main script.js will handle the product grid functionality -->
 {% endblock %}

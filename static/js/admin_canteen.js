@@ -5,10 +5,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const cancelBtn = document.getElementById('cancelBtn');
     let editingItemId = null;
 
-    // --- UTILITY FUNCTIONS ---
     const showAlert = window.showAlert || ((msg, type) => console.log(`${type}: ${msg}`));
 
-    // --- API FUNCTIONS ---
     async function fetchMenuItems() {
         try {
             const response = await fetch('/api/canteen/menu');
@@ -59,7 +57,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // --- RENDER FUNCTIONS ---
     function renderMenuItems(items) {
         if (items.length === 0) {
             menuItemsList.innerHTML = `<div class="empty-state"><div class="empty-icon"><i class="fas fa-utensils"></i></div><h3>No Menu Items</h3><p>Add your first item using the form.</p></div>`;
@@ -83,7 +80,6 @@ document.addEventListener('DOMContentLoaded', () => {
         `).join('');
     }
 
-    // --- FORM HANDLING ---
     function populateForm(item) {
         editingItemId = item.id;
         document.getElementById('itemId').value = item.id;
@@ -105,7 +101,6 @@ document.addEventListener('DOMContentLoaded', () => {
         menuItemForm.querySelector('button[type="submit"]').textContent = 'Save Item';
     }
 
-    // --- EVENT LISTENERS ---
     menuItemForm.addEventListener('submit', (e) => {
         e.preventDefault();
         const itemData = {
@@ -130,7 +125,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!action || !itemId) return;
 
         if (action === 'edit') {
-            // Fetch the single item's full data to populate the form accurately
             try {
                 const response = await fetch('/api/canteen/menu');
                 if (!response.ok) throw new Error('Failed to fetch item details');
@@ -150,6 +144,5 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // --- INITIALIZATION ---
     fetchMenuItems();
 });

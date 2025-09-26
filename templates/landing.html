@@ -10,11 +10,9 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
   <style>
-    /* ----- Reset ----- */
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Inter", sans-serif; }
     html,body { height: 100%; width: 100%; }
 
-    /* ----- Body background fallback (image) ----- */
     body {
       min-height: 100vh;
       background: url("{{ url_for('static', filename='assets/background.webp') }}") center/cover no-repeat fixed;
@@ -22,18 +20,16 @@
       overflow: hidden;
     }
 
-    /* ----- Video (top layer over image) ----- */
     .bg-video {
       position: fixed;
       inset: 0;
       width: 100%;
       height: 100%;
       object-fit: cover;
-      z-index: 0;              /* below overlay and UI */
+      z-index: 0;
       display: block;
     }
 
-    /* subtle overlay so text is readable */
     .overlay {
       position: fixed;
       inset: 0;
@@ -41,16 +37,14 @@
       z-index: 1;
     }
 
-    /* ----- Page content (nav + centered area) ----- */
     .page {
       position: relative;
-      z-index: 2; /* above video & overlay */
+      z-index: 2;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
     }
 
-    /* ----- Navbar ----- */
     nav {
       width: 92%;
       max-width: 1200px;
@@ -75,24 +69,20 @@
     }
     .login-btn:hover { background: rgba(255,255,255,0.12); color: #001; }
 
-    /* ----- Center area ----- */
     .hero-content {
       text-align: center;
       color: #fff;
       text-shadow: 0 2px 8px rgba(0,0,0,0.7);
       transition: opacity .4s ease, transform .4s ease;
     }
-    .hero-content h1 {
-      font-size: 3.5rem;
-      font-weight: 700;
-      margin-bottom: 1rem;
+    .form-wrapper {
+      position: relative;
+      width: 380px;
+      max-width: calc(100% - 40px);
+      height: 400px;
+      transition: height 0.4s ease-out;
     }
-    .hero-content p {
-      font-size: 1.25rem;
-      max-width: 550px;
-      margin: 0 auto 1.5rem;
-      opacity: 0.9;
-    }
+
     .hero-content.hidden {
       opacity: 0;
       transform: translateY(-10px);
@@ -107,23 +97,22 @@
       padding: 40px 20px;
     }
 
-    /* ----- Login box (glass) ----- */
     .login-box {
-      width: 380px;
-      max-width: calc(100% - 40px);
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
       padding: 36px 36px 28px;
       border-radius: 14px;
       background: linear-gradient(180deg, rgba(24,64,120,0.25), rgba(8,18,40,0.28));
       border: 1px solid rgba(255,255,255,0.12);
       box-shadow: 0 10px 28px rgba(2,8,20,0.65), inset 0 1px 0 rgba(255,255,255,0.02);
       backdrop-filter: blur(10px) saturate(120%);
-      position: relative;
       text-align: center;
       color: rgba(255,255,255,0.95);
-      transition: transform .28s ease, opacity .28s ease;
+      transition: opacity .4s ease, transform .4s ease;
     }
 
-    /* Slight highlight in center like the screenshot */
     .login-box::before {
       content: "";
       position: absolute;
@@ -133,31 +122,12 @@
       background: radial-gradient( circle at 50% 12%, rgba(255,255,255,0.03), transparent 25% );
     }
 
-    .close-btn {
-      position: absolute;
-      top: -12px;
-      right: -12px;
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      background: rgba(0,0,0,0.6);
-      border: 2px solid rgba(255,255,255,0.95);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      color: #fff;
-      font-weight: 700;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.4);
-    }
-
     .login-box h2 {
       font-size: 28px;
       margin-bottom: 18px;
       letter-spacing: 0.2px;
     }
 
-    /* inputs */
     .input-group { position: relative; margin: 18px 0; }
     .input-group input {
       width: 100%;
@@ -213,15 +183,13 @@
     .register-link { margin-top: 14px; color: rgba(255,255,255,0.55); font-size: 14px; }
     .register-link a { color: rgba(140,200,255,0.95); text-decoration: none; font-weight:600; }
 
-    /* hide state (for toggling) */
-    .login-box.hidden {
+    .login-box.inactive {
       opacity: 0;
-      transform: translateY(-10px) scale(.995);
+      transform: translateY(10px) scale(0.98);
       pointer-events: none;
       visibility: hidden;
     }
 
-    /* responsive */
     @media (max-width:480px){
       .login-box{ width: 92%; padding: 28px 18px; }
       nav{ width: 94%; }
@@ -231,33 +199,21 @@
 </head>
 
 <body>
-  <!-- Background video (replace 'stars.mp4' with your video file) -->
   <video id="bgVideo" class="bg-video" autoplay muted loop playsinline>
     <source src="{{ url_for('static', filename='assets/1.6.mp4') }}" type="video/mp4">
-    <!-- optional webm fallback -->
     <source src="{{ url_for('static', filename='assets/stars.webm') }}" type="video/webm">
-    <!-- If video fails or is blocked, the body background image (background.webp) is visible -->
   </video>
 
   <div class="overlay"></div>
 
   <div class="page">
-    <!-- Navbar -->
     <nav>
-      <div class="logo">Mama Canteen</div>
-      <ul>
-        <li><a href="{{ url_for('home') }}">Home</a></li>
-        <li><a href="{{ url_for('about_page') }}">About</a></li>
-        <li><a href="{{ url_for('contact_page') }}">Contact</a></li>
-        <li><a href="#" class="login-btn" id="openLogin">Login</a></li>
-      </ul>
+      <div class="logo">Mama's Canteen</div>
     </nav>
 
-    <!-- Centered content (login box) -->
     <div class="center-wrap">
-      <!-- Login Form -->
-      <div class="login-box" id="loginBox" >
-        <div class="close-btn" id="closeLogin" title="Close">&times;</div>
+      <div class="form-wrapper" id="formWrapper">
+        <div class="login-box" id="loginBox">
         <h2>Login</h2>
         <form action="{{ url_for('auth_handler') }}" method="POST">
           <input type="hidden" name="form_type" value="login">
@@ -278,9 +234,7 @@
         </form>
       </div>
 
-      <!-- Registration Form -->
-      <div class="login-box hidden" id="registerBox">
-        <div class="close-btn" id="closeRegister" title="Close">&times;</div>
+      <div class="login-box inactive" id="registerBox">
         <h2>Register</h2>
         <form action="{{ url_for('auth_handler') }}" method="POST">
           <input type="hidden" name="form_type" value="signup">
@@ -315,97 +269,52 @@
           <div class="register-link">Already have an account? <a href="#" id="showLogin">Login</a></div>
         </form>
       </div>
-
-      <!-- Login Form -->
-      <div class="login-box" id="loginBox" >
-        <div class="close-btn" id="closeLogin" title="Close">&times;</div>
-        <h2>Login</h2>
-        <form action="{{ url_for('auth_handler') }}" method="POST">
-          <input type="hidden" name="form_type" value="login">
-          <div class="input-group">
-            <input type="text" name="login-identifier" id="login-identifier" placeholder="Email or Contact" required>
-            <i class="fa-solid fa-user icon"></i>
-          </div>
-          <div class="input-group">
-            <input type="password" name="login-password" id="login-password" placeholder="Password" required>
-            <i class="fa-solid fa-lock icon"></i>
-          </div>
-          <div class="options">
-            <label><input type="checkbox" id="remember"> Remember me</label>
-            <a href="{{ url_for('forgot_password_page') }}">Forgot Password?</a>
-          </div>
-          <button type="submit" class="btn-login">Login</button>
-          <div class="register-link">Don't have an account? <a href="#" id="showRegister">Register</a></div>
-        </form>
       </div>
     </div>
   </div>
 
   <script>
-    // Robust DOM references
-    const openLogin = document.getElementById('openLogin');
     const loginBox = document.getElementById('loginBox');
     const registerBox = document.getElementById('registerBox');
-    const closeLogin = document.getElementById('closeLogin');
-    const closeRegister = document.getElementById('closeRegister');
     const bgVideo = document.getElementById('bgVideo');
     const showRegister = document.getElementById('showRegister');
     const showLogin = document.getElementById('showLogin');
+    const formWrapper = document.getElementById('formWrapper');
 
-    // Open login when navbar Login clicked
-    openLogin && openLogin.addEventListener('click', function (e) {
-      e.preventDefault();
-      loginBox.classList.remove('hidden');
-      registerBox.classList.add('hidden');
-      // ensure focus
-      setTimeout(()=> document.getElementById('login-identifier').focus(),150);
-    });
-
-    // Close button
-    closeLogin && closeLogin.addEventListener('click', function () {
-      loginBox.classList.add('hidden');
-    });
-    closeRegister && closeRegister.addEventListener('click', function () {
-      registerBox.classList.add('hidden');
-    });
-
-    // Click outside to close (but not when clicking nav login)
-    document.addEventListener('click', function (evt) {
-      const target = evt.target;
-      if (!loginBox.contains(target) && !registerBox.contains(target) && target !== openLogin && !openLogin.contains(target)) {
-        loginBox.classList.add('hidden');
-        registerBox.classList.add('hidden');
-      }
-    });
-
-    // Fallback: hide video gracefully if it errors (or can't play)
     if (bgVideo) {
       bgVideo.addEventListener('error', () => {
         console.warn('Background video failed to load — falling back to static image.');
         bgVideo.style.display = 'none';
       });
 
-      // If the browser blocks autoplay, hide video (fallback to image)
       bgVideo.addEventListener('play', ()=> { /* ok */ });
       bgVideo.addEventListener('pause', ()=> { /* no-op */ });
     }
 
-    // Toggle between Login and Register forms
     showRegister.addEventListener('click', (e) => {
       e.preventDefault();
-      loginBox.classList.add('hidden');
-      registerBox.classList.remove('hidden');
+      loginBox.classList.add('inactive');
+      registerBox.classList.remove('inactive');
+      formWrapper.style.height = '650px';
     });
 
     showLogin.addEventListener('click', (e) => {
       e.preventDefault();
-      registerBox.classList.add('hidden');
-      loginBox.classList.remove('hidden');
+      registerBox.classList.add('inactive');
+      loginBox.classList.remove('inactive');
+      formWrapper.style.height = '400px';
     });
 
-    // If you want login to be visible initially (like the screenshot),
-    // remove the 'hidden' class from HTML or uncomment the next line:
-    loginBox.classList.remove('hidden');
+    formWrapper.style.height = '400px';
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('form') === 'login') {
+            registerBox.classList.add('inactive');
+            loginBox.classList.remove('inactive');
+            formWrapper.style.height = '400px';
+        }
+    });
   </script>
 </body>
 </html>

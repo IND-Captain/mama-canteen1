@@ -4,36 +4,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
     <title>{% block title %}Mama Canteen{% endblock %}</title>
-    
-    <!-- SEO Meta Tags -->
     <meta name="description" content="{% block meta_description %}A modern and responsive layout for your next web project, built with clean code and engaging animations.{% endblock %}">
     <meta name="keywords" content="web layout, template, flask, python, modern design, responsive">
     <meta name="author" content="Lumora Platform">
 
-    <!-- Favicon -->
     <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
-    
-    <!-- Fonts & Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
-    
-    <!-- Custom Stylesheet -->
     <link rel="stylesheet" href="{{ url_for('static', filename='/css/style.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='/css/canteen.css') }}">
 
 </head>
 <body class="{% block body_class %}{% endblock %}">
-    <!-- Global Alert System -->
     <div id="global-alert-container" style="position: fixed; top: 90px; right: 20px; z-index: 9999; min-width: 300px;">
-        <!-- Alerts will be injected here by script.js -->
     </div>
 
     <a href="#main-content" class="sr-only">Skip to main content</a>
 
-    <!-- DESKTOP SIDEBAR -->
     <aside class="desktop-sidebar" aria-label="Primary navigation">
         <a href="{{ url_for('home') }}" class="logo" aria-label="Homepage">
             <i class="fas fa-utensils" aria-hidden="true"></i>
@@ -66,6 +54,7 @@
             <li><a href="{{ url_for('home') }}" class="{{ 'active' if request.endpoint == 'home' else '' }}"><i class="fas fa-store" aria-hidden="true"></i><span class="link-text">Shop</span></a></li>
             <li><a href="{{ url_for('my_orders_page') }}" class="{{ 'active' if 'order' in request.endpoint else '' }}"><i class="fas fa-box" aria-hidden="true"></i><span class="link-text">My Orders</span></a></li>
             <li><a href="{{ url_for('cart_page') }}" class="{{ 'active' if request.endpoint == 'cart_page' else '' }}"><i class="fas fa-shopping-cart" aria-hidden="true"></i><span class="link-text">My Cart</span></a></li>
+            <li><a href="{{ url_for('contact_page') }}" class="{{ 'active' if request.endpoint == 'contact_page' else '' }}"><i class="fas fa-envelope" aria-hidden="true"></i><span class="link-text">Contact</span></a></li>
         </ul>
         <div class="sidebar-footer">
             <div class="dark-mode-toggle">
@@ -88,7 +77,6 @@
         </div>
     </aside>
 
-    <!-- MOBILE HEADER -->
     <header id="header" role="banner">
         <div class="container">
             <div class="header-content">
@@ -111,12 +99,10 @@
         </div>
     </header>
 
-    <!-- MOBILE SIDEBAR -->
     <div class="mobile-sidebar" id="mobileSidebar" role="navigation" aria-label="Mobile navigation">
         <nav class="nav-links">
             <a href="{{ url_for('home') }}">Home</a>
             <a href="{{ url_for('cart_page') }}" class="cta-button"><i class="fas fa-shopping-cart"></i> My Cart</a>
-            <!-- Example Logout Button -->
             {% if session.user_id %}
             <a href="{{ url_for('logout') }}" class="cta-button" style="background: var(--gray-600);">Logout</a>
             {% endif %}
@@ -124,7 +110,6 @@
     </div>
     <div class="mobile-overlay" id="mobileOverlay"></div>
 
-    <!-- MAIN CONTENT AREA -->
     <main id="main-content">
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
@@ -138,18 +123,19 @@
             {% endif %}
         {% endwith %}
         {% block content %}
-        <!-- Page-specific content will be injected here -->
         <div class="container" style="padding-top: 120px;">
-            <h1>Welcome to Oasis</h1>
-            <p>This is the default content. Create a template that extends layout.html and defines a 'content' block to override this.</p>
+            <div class="text-center">
+                <h1 class="display-4">Content Missing</h1>
+                <p class="lead">This page is under construction.</p>
+                <hr class="my-4">
+                <p>To add content to this page, create a template that extends <code>layout.html</code> and defines a <code>{% raw %}{% block content %}{% endraw %}</code> block.</p>
+            </div>
         </div>
         {% endblock %}
     </main>
 
-    <!-- BACK TO TOP BUTTON -->
     <button id="back-to-top-btn" title="Go to top" aria-label="Go to top"><i class="fas fa-arrow-up"></i></button>
 
-    <!-- FOOTER -->
     <footer role="contentinfo">
         <div class="container">
             <div class="footer-content">
@@ -179,7 +165,6 @@
         </div>
     </footer>
 
-    <!-- Your Local JavaScript -->
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js" integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+" crossorigin="anonymous"></script>
     <script src="{{ url_for('static', filename='/js/script.js') }}" defer></script>

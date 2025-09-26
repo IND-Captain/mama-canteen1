@@ -9,7 +9,6 @@ window.addEventListener('load', () => {
     const sidebarPinToggle = document.getElementById('sidebarPinToggle');
     const backToTopBtn = document.getElementById('back-to-top-btn');
 
-    // Centralized Page Initializers
     const pageInitializers = {
         'page-home': initializeHomepageAndGrid,
         'page-get-involved': initializeAuthForms,
@@ -22,19 +21,16 @@ window.addEventListener('load', () => {
         'page-product-detail': initializeAddToCartForms
     };
 
-    // Run initializers for the current page
     for (const pageClass in pageInitializers) {
         if (body.classList.contains(pageClass)) {
             pageInitializers[pageClass]();
         }
     }
 
-    // --- Global Alert System ---
     window.showAlert = (message, type = 'success') => {
         const alertContainer = document.getElementById('global-alert-container');
         if (!alertContainer) return;
 
-        // Map flash categories to Bootstrap alert types
         const bsType = {
             'danger': 'danger',
             'success': 'success',
@@ -52,16 +48,14 @@ window.addEventListener('load', () => {
         const alertElement = wrapper.firstChild;
         alertContainer.append(alertElement);
 
-        // Automatically dismiss after a few seconds
         const bsAlert = new bootstrap.Alert(alertElement);
         setTimeout(() => bsAlert.close(), 5000);
     };
 
-    // --- Form Validation Helpers ---
     function showError(inputElement, message) {
         const formGroup = inputElement.closest('.form-group');
         if (formGroup) {
-            formGroup.classList.add('invalid');
+            inputElement.classList.add('is-invalid');
             const errorElement = formGroup.querySelector('.error-message');
             if (errorElement) {
                 errorElement.textContent = message;
@@ -72,7 +66,7 @@ window.addEventListener('load', () => {
     function clearError(inputElement) {
         const formGroup = inputElement.closest('.form-group');
         if (formGroup) {
-            formGroup.classList.remove('invalid');
+            inputElement.classList.remove('is-invalid');
             const errorElement = formGroup.querySelector('.error-message');
             if (errorElement) {
                 errorElement.textContent = '';
@@ -81,7 +75,6 @@ window.addEventListener('load', () => {
     }
 
     function isValidEmail(email) {
-        // A simple regex for email validation
         const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
         return re.test(String(email).toLowerCase());
     }
@@ -92,14 +85,11 @@ window.addEventListener('load', () => {
             const observer = new IntersectionObserver((entries) => { 
                 entries.forEach(entry => { 
                     if (entry.isIntersecting) { 
-                        // Staggered delay for grid items
                         const delay = (entry.target.dataset.staggerIndex || 0) * 100;
                         setTimeout(() => entry.target.classList.add('in-view'), delay);
-                        // Keep observing to re-animate if scrolled out and back in
-                        // observer.unobserve(entry.target); // Uncomment to animate only once
                     } 
                 }); 
-            }, { threshold: 0.2, rootMargin: "0px 0px -50px 0px" }); // Trigger a bit earlier 
+            }, { threshold: 0.2, rootMargin: "0px 0px -50px 0px" });
  
             animatedElements.forEach((el, index) => {
                 observer.observe(el);
@@ -108,7 +98,6 @@ window.addEventListener('load', () => {
     }
 
     function initializeHomepageAndGrid() {
-        // --- Animated Counters ---
         const statsSection = document.querySelector('.stats-section');
         if (statsSection) {
             const observer = new IntersectionObserver((entries) => {
@@ -118,7 +107,7 @@ window.addEventListener('load', () => {
                         counters.forEach(counter => {
                             const target = +counter.getAttribute('data-target');
                             let current = 0;
-                            const increment = target / 100; // Adjust speed of animation
+                            const increment = target / 100;
 
                             const updateCounter = () => {
                                 if (current < target) {
@@ -131,14 +120,12 @@ window.addEventListener('load', () => {
                             };
                             updateCounter();
                         });
-                        observer.unobserve(statsSection); // Animate only once
+                        observer.unobserve(statsSection);
                     }
                 });
             }, { threshold: 0.5 });
             observer.observe(statsSection);
         }
-        
-        // --- Product Grid Filtering and Sorting ---
         const controls = document.querySelector('.product-controls');
         if (!controls) return;
 
@@ -148,7 +135,6 @@ window.addEventListener('load', () => {
         let productItems = Array.from(productGrid.querySelectorAll('.product-item'));
 
         const updateGrid = () => {
-            // 1. Filtering
             const activeFilter = document.querySelector('.filter-btn.active').dataset.filter;
             productItems.forEach(item => {
                 const itemCategory = item.dataset.category;
@@ -156,7 +142,6 @@ window.addEventListener('load', () => {
                 item.classList.toggle('hide', !isVisible);
             });
 
-            // 2. Sorting
             const sortValue = sortSelect.value;
             let visibleItems = productItems.filter(item => !item.classList.contains('hide'));
 
@@ -173,13 +158,11 @@ window.addEventListener('load', () => {
                     }
                 });
             } else {
-                // Revert to original DOM order if "Default" is selected
                 visibleItems.sort((a, b) => {
                     return productItems.indexOf(a) - productItems.indexOf(b);
                 });
             }
 
-            // 3. Re-append to grid
             visibleItems.forEach(item => productGrid.appendChild(item));
         };
 
@@ -193,16 +176,12 @@ window.addEventListener('load', () => {
 
         sortSelect.addEventListener('change', updateGrid);
 
-        // Make product cards clickable
         productGrid.addEventListener('click', (e) => {
-            // Find the card that was clicked on, if any
             const card = e.target.closest('.clickable-card');
             if (!card) return;
 
-            // Check if the click was on a button, a link, or inside a form
             const isInteractive = e.target.closest('button, a, form');
 
-            // If not an interactive element, navigate
             if (!isInteractive) {
                 const href = card.dataset.href;
                 if (href) window.location.href = href;
@@ -210,12 +189,23 @@ window.addEventListener('load', () => {
         });
 
         initializeAddToCartForms();
+
+        productGrid.querySelectorAll('.product-card').forEach(card => {
+            card.addEventListener('mousemove', e => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                card.style.setProperty('--mouse-x', `${x}px`);
+                card.style.setProperty('--mouse-y', `${y}px`);
+            });
+        });
+
     }
 
     function initializeAddToCartForms() {
         document.querySelectorAll('form[action*="/add-to-cart/"]').forEach(form => {
             form.addEventListener('submit', async (e) => {
-                e.preventDefault(); // Stop the default form submission
+                e.preventDefault();
                 
                 const formData = new FormData(form);
                 const url = form.getAttribute('action');
@@ -237,7 +227,6 @@ window.addEventListener('load', () => {
 
                     if (data.success) {
                         showAlert(data.message || 'Item added to cart!', 'success');
-                        // Update cart count in header
                         const cartBadge = document.querySelector('.cta-button .badge');
                         const currentCount = parseInt(cartBadge.textContent || '0');
                         const newCount = currentCount + parseInt(formData.get('quantity'));
@@ -253,7 +242,6 @@ window.addEventListener('load', () => {
             });
         });
 
-        // Add event listeners for new quantity controls
         document.querySelectorAll('.quantity-controls .btn-qty').forEach(button => {
             button.addEventListener('click', () => {
                 const input = button.parentElement.querySelector('.quantity-input');
@@ -292,7 +280,6 @@ window.addEventListener('load', () => {
                 });
             });
 
-            // Login Form Validation
             const loginForm = document.getElementById('login-form');
             if (loginForm) {
                 loginForm.addEventListener('submit', (e) => {
@@ -300,7 +287,6 @@ window.addEventListener('load', () => {
                     const identifier = loginForm.querySelector('#login-identifier');
                     const password = loginForm.querySelector('#login-password');
 
-                    // Clear previous errors
                     clearError(identifier);
                     clearError(password);
 
@@ -318,7 +304,6 @@ window.addEventListener('load', () => {
                 });
             }
 
-            // Signup Form Validation
             const signupForm = document.getElementById('signup-form');
             if (signupForm) {
                 signupForm.addEventListener('submit', (e) => {
@@ -375,13 +360,12 @@ window.addEventListener('load', () => {
         const tabs = container.querySelectorAll('.faq-tab'); 
         const items = container.querySelectorAll('.faq-item');
     
-        // Filtering logic
         const filterFaqs = () => { 
             const searchTerm = searchInput.value.toLowerCase();
             const activeCategory = container.querySelector('.faq-tab.active').dataset.category;
     
             items.forEach(item => {
-                const category = item.dataset.category;
+                const category = item.getAttribute('data-category');
                 const questionText = item.querySelector('.accordion-button').textContent.toLowerCase();
                 const answerText = item.querySelector('.faq-answer').textContent.toLowerCase();
     
@@ -412,7 +396,6 @@ window.addEventListener('load', () => {
                 const email = contactForm.querySelector('#email');
                 const message = contactForm.querySelector('#message');
 
-                // Clear previous errors
                 clearError(name);
                 clearError(email);
                 clearError(message);
@@ -447,7 +430,7 @@ window.addEventListener('load', () => {
                     return;
                 }
 
-                const destination = "123 Life-Saver St, Hope City, 12345"; // Your store's address
+                const destination = "123 Life-Saver St, Hope City, 12345";
 
                 const success = (position) => {
                     const latitude = position.coords.latitude;
@@ -458,7 +441,7 @@ window.addEventListener('load', () => {
 
                 const error = (err) => {
                     let message = "Unable to retrieve your location.";
-                    if (err.code === 1) { // PERMISSION_DENIED
+                    if (err.code === 1) {
                         message = "Location access was denied. Please enable it in your browser settings.";
                     }
                     showAlert(message, "danger");
@@ -500,28 +483,26 @@ window.addEventListener('load', () => {
 
         const editBtn = document.getElementById('edit-profile-btn');
         const buttonsContainer = document.getElementById('profile-buttons');
-        const inputs = form.querySelectorAll('.form-input, #profile-picture');
+        const inputs = form.querySelectorAll('.form-control, #profile-picture');
         const pictureInput = document.getElementById('profile-picture');
         const picturePreview = document.getElementById('picture-preview');
 
         if (editBtn) {
             editBtn.addEventListener('click', () => {
-                // Enable form fields (except email)
                 inputs.forEach(input => {
                     if (input.id !== 'email') {
                         input.removeAttribute('disabled');
                     }
                 });
 
-                // Update buttons
                 buttonsContainer.innerHTML = `
-                    <button type="submit" class="btn-submit">Save Changes</button>
-                    <button type="button" id="cancel-edit-btn" class="btn-secondary">Cancel</button>
+                    <button type="submit" class="btn btn-success">Save Changes</button>
+                    <button type="button" id="cancel-edit-btn" class="btn btn-secondary">Cancel</button>
+                    <input type="hidden" name="form_type" value="profile_update">
                 `;
 
-                // Add event listener for the new cancel button
                 document.getElementById('cancel-edit-btn').addEventListener('click', () => {
-                    window.location.reload(); // Easiest way to revert changes
+                    window.location.reload();
                 });
             });
         }
@@ -534,6 +515,34 @@ window.addEventListener('load', () => {
                     reader.onload = (event) => {
                         picturePreview.src = event.target.result;
                     };
+                    reader.addEventListener('load', async () => {
+                        const formData = new FormData();
+                        formData.append('profile-picture', file);
+
+                        try {
+                            const response = await fetch('/api/update-profile-picture', {
+                                method: 'POST',
+                                body: formData,
+                                headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                            });
+                            const data = await response.json();
+                            if (response.ok && data.success) {
+                                showAlert(data.message, 'success');
+                                const headerProfilePic = document.querySelector('.desktop-sidebar .profile-img');
+                                if (headerProfilePic) {
+                                    headerProfilePic.src = data.new_url;
+                                }
+                            } else {
+                                showAlert(data.message || 'Upload failed.', 'danger');
+                                picturePreview.src = originalPictureSrc;
+                            }
+                        } catch (error) {
+                            console.error('Profile picture upload error:', error);
+                            showAlert('An error occurred during upload.', 'danger');
+                            picturePreview.src = originalPictureSrc;
+                        }
+                    });
+
                     reader.readAsDataURL(file);
                 }
             });
@@ -548,7 +557,7 @@ window.addEventListener('load', () => {
                 const confirmNewPassword = changePasswordForm.querySelector('#confirm_new_password');
 
                 clearError(currentPassword);
-                clearError(newPassword);
+                clearError(newPassword); // This will remove is-invalid from the input
                 clearError(confirmNewPassword);
 
                 if (currentPassword.value.trim() === '') {
@@ -564,7 +573,7 @@ window.addEventListener('load', () => {
                 } else if (newPassword.value !== confirmNewPassword.value) {
                     isValid = false; showError(confirmNewPassword, 'Passwords do not match.');
                 }
-
+                
                 if (!isValid) {
                     e.preventDefault();
                 }
@@ -573,8 +582,6 @@ window.addEventListener('load', () => {
     }
 
     function initializeCartPage() {
-        // This function is now a placeholder.
-        // The cart page is fully rendered by the server.
     }
     function initializeAdminDashboard() {
         const tabs = document.querySelectorAll('.admin-tab');
@@ -584,7 +591,6 @@ window.addEventListener('load', () => {
         const deleteForm = document.getElementById('delete-form');
         const itemToDeleteName = document.getElementById('item-to-delete-name');
 
-        // Tab functionality
         tabs.forEach(tab => {
             tab.addEventListener('click', () => {
                 const tabId = tab.dataset.tab;
@@ -598,7 +604,6 @@ window.addEventListener('load', () => {
             });
         });
 
-        // Delete confirmation functionality
         deleteButtons.forEach(button => {
             button.addEventListener('click', () => {
                 const action = button.dataset.action;
@@ -614,7 +619,6 @@ window.addEventListener('load', () => {
     }
 
     function initializeInteractiveEffects() {
-        // --- Mouse-aware glow for feature cards ---
         const featureCards = document.querySelectorAll('.feature-card');
         featureCards.forEach(card => {
             card.addEventListener('mousemove', e => {
@@ -663,13 +667,11 @@ window.addEventListener('load', () => {
         sidebarPinToggle.addEventListener('click', () => {
             desktopSidebar.classList.toggle('force-open');
             sidebarPinToggle.classList.toggle('active');
-            // Optional: Save preference to localStorage
             localStorage.setItem('sidebarPinned', desktopSidebar.classList.contains('force-open'));
         });
     }
 
     window.addEventListener('scroll', () => {
-        // Header scroll effect
         if (header) {
             if (window.scrollY > 50) {
                 header.classList.add('scrolled');
@@ -678,7 +680,6 @@ window.addEventListener('load', () => {
             }
         }
 
-        // Back to Top button visibility
         if (backToTopBtn) {
             if (window.scrollY > 300) {
                 backToTopBtn.classList.add('show');
@@ -687,11 +688,9 @@ window.addEventListener('load', () => {
             }
         }
 
-        // Hero Parallax Effect
         const heroVideo = document.getElementById('hero-video');
         if (heroVideo) {
             const scrollPosition = window.scrollY;
-            // Move the video up at a fraction of the scroll speed (e.g., 0.3)
             heroVideo.style.transform = `translateX(-50%) translateY(calc(-50% + ${scrollPosition * 0.3}px)) scale(1.1)`;
         }
     });
@@ -705,7 +704,6 @@ window.addEventListener('load', () => {
         }
     }
     
-    // Initialize global handlers
     initializeScrollAnimations();
     initializeInteractiveEffects();
 

@@ -1,18 +1,8 @@
-/*
-Canteen-specific styles.
-This file now inherits its color variables from style.css and theme.css for consistency.
-Dark mode styles are handled globally in style.css.
-*/
-
-/* General variables used in this file */
 :root {
     --veg-color: var(--success-green);
     --nonveg-color: var(--primary-green);
     --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
-
-/* Apply to specific pages */
-/* These pages will get their dark background from the body.dark-mode rule in style.css */
 .page-canteen-menu,
 .page-canteen-orders,
 .page-canteen-checkout {
@@ -22,7 +12,6 @@ h1, h2, h3, h4, h5, h6 {
     font-family: 'Playfair Display', serif;
 }
 
-/* Sections */
 .section {
     padding: 60px 0;
     animation: fadeInUp 0.8s ease-out;
@@ -39,7 +28,6 @@ h1, h2, h3, h4, h5, h6 {
     }
 }
 
-/* Section headers */
 .section-header {
     text-align: center;
     margin-bottom: 60px;
@@ -62,7 +50,6 @@ h1, h2, h3, h4, h5, h6 {
     margin: 0 auto;
 }
 
-/* Menu Filters */
 .menu-filters {
     display: flex;
     gap: 20px;
@@ -91,7 +78,6 @@ h1, h2, h3, h4, h5, h6 {
     background: var(--primary-green);
 }
 
-/* Veg/nonveg filters */
 .veg-nonveg-filters {
     display: flex;
     gap: 15px;
@@ -129,7 +115,6 @@ h1, h2, h3, h4, h5, h6 {
     color: var(--nonveg-color);
 }
 
-/* Menu Layout */
 .menu-layout {
     display: grid;
     grid-template-columns: 2fr 1fr;
@@ -144,7 +129,6 @@ h1, h2, h3, h4, h5, h6 {
     gap: 30px;
 }
 
-/* Menu Item Card */
 .menu-item {
     background: var(--white);
     border-radius: 25px;
@@ -256,7 +240,6 @@ h1, h2, h3, h4, h5, h6 {
     color: var(--primary-green);
 }
 
-/* Quantity Controls */
 .quantity-controls {
     display: flex;
     align-items: center;
@@ -299,7 +282,6 @@ body.dark-mode .quantity {
     color: var(--dm-text);
 }
 
-/* Order Summary */
 .order-summary {
     background: var(--white);
     border-radius: 25px;
@@ -372,7 +354,6 @@ body.dark-mode .quantity {
     box-shadow: none;
 }
 
-/* Orders Section */
 .orders-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
@@ -454,7 +435,6 @@ body.dark-mode .quantity {
     text-align: right;
 }
 
-/* Checkout Section */
 .checkout-container {
     max-width: 900px;
     margin: 0 auto;
@@ -572,7 +552,6 @@ body.dark-mode .quantity {
     box-shadow: 0 0 0 3px rgba(var(--primary-green-rgb), 0.1);
 }
 
-/* Payment Options */
 .payment-options {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -610,7 +589,6 @@ body.dark-mode .quantity {
     font-weight: 600;
 }
 
-/* Checkout Items */
 .checkout-items {
     margin-bottom: 30px;
 }
@@ -696,7 +674,6 @@ body.dark-mode .quantity {
     box-shadow: none;
 }
 
-/* Empty state */
 .empty-state {
     text-align: center;
     padding: 80px 20px;
@@ -716,7 +693,6 @@ body.dark-mode .quantity {
     font-size: 1.5rem;
 }
 
-/* Receipt Modal */
 #receiptModal {
     position: fixed;
     top: 0;
@@ -791,7 +767,6 @@ body.dark-mode .quantity {
     filter: brightness(1.1);
 }
 
-/* Responsive */
 @media (max-width: 768px) {
     .menu-layout {
         grid-template-columns: 1fr;
@@ -805,14 +780,13 @@ body.dark-mode .quantity {
     }
 }
 
-/* Post-Order Animation Styles */
 .delivery-animation-container {
     display: flex;
     justify-content: space-around;
     align-items: flex-start;
     margin-top: 40px;
     position: relative;
-    height: 120px; /* Give it some space */
+    height: 120px;
 }
 
 .animation-step {
@@ -846,7 +820,6 @@ body.dark-mode .quantity {
     color: var(--primary-green);
 }
 
-/* Keyframe Animations for Icons */
 .animation-step.active .animation-icon-wrapper i {
     animation: icon-pop 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
 }
@@ -857,7 +830,6 @@ body.dark-mode .quantity {
     100% { transform: scale(1); opacity: 1; }
 }
 
-/* Specific animation for the motorcycle */
 #anim-step-3.active .animation-icon-wrapper i {
     animation: motorcycle-drive-in 1s ease-out forwards;
 }

@@ -17,7 +17,6 @@
             <button class="admin-tab active" data-tab="users">User Management ({{ data.users|length }})</button>
         </div>
 
-        <!-- Users Tab -->
         <div id="users-content" class="admin-tab-content active">
             {% if data.users %}
             <div class="table-responsive mt-4">
@@ -55,7 +54,6 @@
     </div>
 </section>
 
-<!-- Deletion Confirmation Modal -->
 <div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">

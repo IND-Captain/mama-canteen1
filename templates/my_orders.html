@@ -22,5 +22,10 @@
 {% endblock %}
 
 {% block scripts %}
+<script>
+    // Embed server-side orders data for client-side rendering
+    // This makes the 'orders' variable from Flask available in JavaScript
+    window.serverOrders = {{ orders | tojson }};
+</script>
 <script src="{{ url_for('static', filename='js/canteen.js') }}"></script>
 {% endblock %}

@@ -2422,6 +2422,20 @@ body.dark-mode .global-alert.info { background: var(--gray-800); border: 1px sol
     box-shadow: var(--shadow-md);
     overflow: hidden;
     transition: all 0.3s ease;
+    position: relative; /* Needed for pseudo-element */
+}
+.product-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: radial-gradient(circle 200px at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(255,255,255,0.4), transparent 80%);
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    z-index: 1;
+    pointer-events: none;
+}
+.product-card:hover::before {
+    opacity: 1;
 }
 .product-card:hover {
     transform: translateY(-5px);
@@ -2431,6 +2445,8 @@ body.dark-mode .global-alert.info { background: var(--gray-800); border: 1px sol
     display: block;
     height: 220px; /* Adjust this height to make images taller or shorter */
     overflow: hidden;
+    position: relative; /* Ensure image is below the shine effect */
+    z-index: 0;
 }
 .product-image {
     width: 100%;
